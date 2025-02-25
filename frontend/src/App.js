@@ -3,6 +3,8 @@ import AuthForm from "./components/Auth/AuthForm";
 import ForgotPassword from "./components/Auth/ForgotPassword";
 import ResetPassword from "./components/Auth/ResetPassword";
 import Header from "./components/Header";
+import Footer from "./Footer";
+
 import HomePage from "./components/HomePage";
 import FutsalCourts from "./components/FutsalCourts/FutsalCourts";
 import Admin from "./components/Auth/Admin";
@@ -14,6 +16,7 @@ import UserProfile from "./profile/UserProfile";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { adminActions, userActions } from "./store";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -63,6 +66,8 @@ function App() {
           </>
         )}
       </Routes>
+      <Footer />
+
     </div>
   );
 }
