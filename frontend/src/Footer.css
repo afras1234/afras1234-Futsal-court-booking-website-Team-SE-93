@@ -9,7 +9,7 @@ body {
 /* Footer Styles */
 footer {
     font-family: 'Poppins', sans-serif;
-    background-color: #ff6600; /* Match the orange background */
+    background-color: #ff6600; 
     color: white;
     padding: 70px;
 }
@@ -58,29 +58,29 @@ footer {
 }
 
 .social-icons a:hover {
-    background-color: black; /* Change background on hover */
-    color: white;  /* Change icon color on hover */
-    transform: scale(1.2); /* Slightly increase size */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+    background-color: black; 
+    color: white; 
+    transform: scale(1.2); 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
 /* Contact Us Button */
 .contact-btn {
-    background-color:rgb(223, 220, 220); /* White background */
-    color: black;  /* Black text */
+    background-color:rgb(223, 220, 220); 
+    color: black;  
     border: none;
-    padding: 12px 37px;  /* Adjust padding for better proportions */
-    font-size: 15px;  /* Match text size */
-    font-weight: 500;  /* Slightly bold */
-    border-radius: 100px;  /* Rounded button */
+    padding: 12px 37px; 
+    font-size: 15px; 
+    font-weight: 500;  
+    border-radius: 100px; 
     transition: all 0.3s ease-in-out;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
-    margin-top: 47px;  /* Adjust this value to move it lower */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+    margin-top: 47px; 
 }
 
 .contact-btn:hover {
-    background-color: #f4f4f4;  /* Light gray on hover */
-    transform: scale(1.07);  /* Slight increase in size */
+    background-color: #f4f4f4;  
+    transform: scale(1.07); 
 }
 
 /* Right Side (Columns) */
@@ -112,7 +112,7 @@ footer {
     color:rgb(223, 220, 220);
     text-decoration: none;
     transition: 0.3s;
-    font-weight: 300; /* Normal */
+    font-weight: 300; 
     font-size: 14px;
 }
 
@@ -124,7 +124,7 @@ footer {
 .footer-bottom {
     text-align: left;
     position: relative;
-    top: 150px; /* Move it lower */
+    top: 150px; 
     font-size: 10px;
     color:rgb(223, 220, 220);
 }
