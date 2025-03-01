@@ -6,42 +6,78 @@ import {
   IconButton,
   TextField,
   Typography,
+  Alert,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const AuthForm = ({ onSubmit, isAdmin }) => {
   const [inputs, setInputs] = useState({
     name: "",
     email: "",
     password: "",
+    phone: "", // Add phone field
   });
   const [isSignup, setIsSignup] = useState(false);
+  const [error, setError] = useState(""); // Add error state
   const navigate = useNavigate();
+  const location = useLocation();
 
-  console.log("onSubmit prop:", onSubmit); // Debugging
+  useEffect(() => {
+    // Get mode from URL parameters
+    const params = new URLSearchParams(location.search);
+    const mode = params.get("mode");
+    setIsSignup(mode === "signup");
+    setError(""); // Clear error when switching modes
+  }, [location]);
 
   const handleChange = (e) => {
     setInputs((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+    setError(""); // Clear error when user types
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // Clear any previous errors
 
-    if (typeof onSubmit !== "function") {
-      console.error("Error: onSubmit function is missing!");
-      return;
+    try {
+      // Validate inputs
+      if (isSignup) {
+        if (!inputs.name) {
+          setError("Name is required");
+          return;
+        }
+        if (!inputs.phone) {
+          setError("Phone number is required");
+          return;
+        }
+      }
+      if (!inputs.email) {
+        setError("Email is required");
+        return;
+      }
+      if (!inputs.password) {
+        setError("Password is required");
+        return;
+      }
+
+      await onSubmit({ inputs, signup: isAdmin ? false : isSignup });
+    } catch (err) {
+      setError(err.response?.data?.message || "An error occurred during authentication");
     }
-
-    onSubmit({ inputs, signup: isAdmin ? false : isSignup });
   };
 
   const handleForgotPassword = () => {
     navigate("/forgot-password");
+  };
+
+  const toggleMode = () => {
+    const newMode = isSignup ? "login" : "signup";
+    navigate(`/auth?mode=${newMode}`);
   };
 
   return (
@@ -71,6 +107,13 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
       >
         {isSignup ? "Create Account" : "Welcome Back"}
       </Typography>
+      
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
@@ -94,6 +137,24 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
                 variant="standard"
                 type="text"
                 name="name"
+                sx={{
+                  background: "rgba(255, 255, 255, 0.2)",
+                  borderRadius: 1,
+                  padding: "10px",
+                  color: "white",
+                }}
+                InputProps={{ sx: { color: "white" } }}
+              />
+              <FormLabel sx={{ color: "white", fontWeight: "bold" }}>
+                Phone
+              </FormLabel>
+              <TextField
+                value={inputs.phone}
+                onChange={handleChange}
+                margin="normal"
+                variant="standard"
+                type="tel"
+                name="phone"
                 sx={{
                   background: "rgba(255, 255, 255, 0.2)",
                   borderRadius: 1,
@@ -141,6 +202,7 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
             InputProps={{ sx: { color: "white" } }}
           />
           <Button
+            type="submit"
             sx={{
               mt: 2,
               borderRadius: 2,
@@ -148,41 +210,38 @@ const AuthForm = ({ onSubmit, isAdmin }) => {
               textTransform: "uppercase",
               backgroundColor: "#ff6700",
               "&:hover": { backgroundColor: "#ff4500" },
+              color: "white",
+              width: "100%",
             }}
-            type="submit"
-            fullWidth
-            variant="contained"
           >
-            {isSignup ? "Sign Up" : "Login"}
+            {isSignup ? "Create Account" : "Login"}
           </Button>
-          {!isAdmin && (
-            <Button
-              onClick={() => setIsSignup(!isSignup)}
-              sx={{
-                mt: 2,
-                borderRadius: 2,
-                fontWeight: "bold",
-                color: "white",
-                textDecoration: "underline",
-              }}
-              fullWidth
-            >
-              Switch to {isSignup ? "Login" : "Sign Up"}
-            </Button>
-          )}
           <Button
-            onClick={handleForgotPassword}
+            onClick={toggleMode}
             sx={{
               mt: 2,
-              borderRadius: 2,
-              fontWeight: "bold",
-              color: "#ffcc00",
-              textTransform: "uppercase",
+              color: "white",
+              textDecoration: "underline",
+              "&:hover": { backgroundColor: "transparent" },
             }}
-            fullWidth
           >
-            Forgot Password?
+            {isSignup
+              ? "Already have an account? Login"
+              : "Don't have an account? Sign Up"}
           </Button>
+          {!isSignup && (
+            <Button
+              onClick={handleForgotPassword}
+              sx={{
+                mt: 1,
+                color: "white",
+                textDecoration: "underline",
+                "&:hover": { backgroundColor: "transparent" },
+              }}
+            >
+              Forgot Password?
+            </Button>
+          )}
         </Box>
       </form>
     </Dialog>

@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import AuthForm from "./components/Auth/AuthForm";
 import ForgotPassword from "./components/Auth/ForgotPassword";
 import ResetPassword from "./components/Auth/ResetPassword";
 import Header from "./components/Header";
@@ -39,29 +38,33 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/futsalCourts" element={<FutsalCourts />} />
 
+        {/* Auth routes */}
         {!isUserLoggedIn && !isAdminLoggedIn && (
           <>
             <Route path="/admin" element={<Admin />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/login" element={<AuthForm />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:email" element={<ResetPassword />} />
           </>
         )}
 
+        {/* Protected routes */}
         {isUserLoggedIn && (
           <>
-            <Route path="/user" element={<UserProfile />} />
+            <Route path="/user-profile" element={<UserProfile />} />
             <Route path="/booking/:id" element={<Booking />} />
           </>
         )}
 
         {isAdminLoggedIn && (
           <>
+            <Route path="/admin-profile" element={<AdminProfile />} />
             <Route path="/add" element={<AddFutsalCourt />} />
-            <Route path="/user-admin" element={<AdminProfile />} />
           </>
         )}
+
+        {/* Catch-all route */}
+        <Route path="*" element={<HomePage />} />
       </Routes>
     </div>
   );

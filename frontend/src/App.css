@@ -1,3 +1,97 @@
+:root {
+    --primary-color: #2ecc71;
+    --secondary-color: #27ae60;
+    --dark-color: #2c3e50;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: white !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    color: var(--primary-color) !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: var(--dark-color) !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('https://images.unsplash.com/photo-1577223625816-6500cc0d7277?ixlib=rb-4.0.3') center/cover;
+    height: 80vh;
+    margin-top: 76px;
+}
+
+.search-container {
+    max-width: 600px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.search-bar {
+    border-radius: 30px !important;
+    padding: 15px 25px !important;
+    font-size: 1.1rem !important;
+    border: none !important;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+}
+
+/* Court Cards */
+.court-card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin-bottom: 20px;
+}
+
+.court-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.court-image {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px 15px 0 0;
+}
+
+.rating {
+    color: #ffd700;
+}
+
+.btn-book {
+    border-radius: 20px;
+    padding: 8px 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 60vh;
+        margin-top: 62px;
+    }
+    
+    .search-container {
+        width: 95%;
+    }
+}
+
 .App {
   text-align: center;
 }

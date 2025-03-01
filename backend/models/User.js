@@ -13,14 +13,28 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: false, // Password may not be required for Google-authenticated users
+    required: false,
     minLength: 6,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  profileImage: {
+    type: String,
+    default: "",
+  },
+  bio: {
+    type: String,
+    default: "",
   },
   bookings: [{ type: mongoose.Types.ObjectId, ref: "Booking" }],
   googleId: {
     type: String,
-    required: false, // Store Google ID for users signing in with Google
+    required: false,
   },
+}, {
+  timestamps: true
 });
 
 export default mongoose.model("User", userSchema);

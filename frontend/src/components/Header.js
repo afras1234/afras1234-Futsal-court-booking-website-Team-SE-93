@@ -3,13 +3,15 @@ import {
   AppBar,
   Autocomplete,
   IconButton,
-  Tab,
-  Tabs,
   TextField,
   Toolbar,
   Box,
+  Menu,
+  MenuItem,
+  Button,
 } from "@mui/material";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { getAllFutsalCourts } from "../api-helpers/api-helpers";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,56 +22,145 @@ const Header = () => {
   const dispatch = useDispatch();
   const isAdminLoggedIn = useSelector((state) => state.admin.isLoggedIn);
   const isUserLoggedIn = useSelector((state) => state.user.isLoggedIn);
-  const [value, setValue] = useState(0);
   const [futsalCourts, setFutsalCourts] = useState([]);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [profileAnchorEl, setProfileAnchorEl] = useState(null);
 
   useEffect(() => {
     getAllFutsalCourts()
       .then((data) => {
-        if (data && data.futsalCourts) {
-          setFutsalCourts(data.futsalCourts);
-        } else {
-          setFutsalCourts([]);
-        }
+        setFutsalCourts(data?.futsalCourts || []);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  const logout = (isAdmin) => {
-    dispatch(isAdmin ? adminActions.logout() : userActions.logout());
+  const logout = () => {
+    dispatch(isAdminLoggedIn ? adminActions.logout() : userActions.logout());
+    handleProfileClose();
+    navigate("/");
   };
 
-  const handleChange = (e, val) => {
+  const handleChange = (event, val) => {
     const futsalCourt = futsalCourts.find((m) => m.title === val);
     if (futsalCourt && isUserLoggedIn) {
       navigate(`/booking/${futsalCourt._id}`);
     }
   };
 
+  // Handlers for menus
+  const handleMenuOpen = (event) => setMenuAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setMenuAnchorEl(null);
+  const handleProfileOpen = (event) => setProfileAnchorEl(event.currentTarget);
+  const handleProfileClose = () => setProfileAnchorEl(null);
+
   return (
-    <AppBar
-      position="sticky"
+    <Box
       sx={{
-        background: "linear-gradient(90deg,rgba(248, 107, 13, 0.95),rgb(193, 93, 11))", // Fiery orange-red gradient
-        boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
+        position: "relative",
+        width: "100%",
+        height: "60vh",
+        backgroundImage: `url("https://img.freepik.com/premium-photo/football-futsal-player-ball-futsal-floor-sports-background-indoor-soccer-sports-hall-youth-futsal-league-indoor-football-players-soccer-ball-generative-ai_117038-8122.jpg")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 1,
+          pointerEvents: "none", // ✅ Prevents blocking UI elements
+        },
       }}
     >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        {/* Logo Section */}
-        <IconButton component={Link} to="/" sx={{ marginLeft: "10px" }}>
-          <SportsSoccerIcon
-            sx={{
-              fontSize: 45,
-              color: "#fff",
-              textShadow: "2px 2px 6px rgba(0, 0, 0, 0.3)",
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": { transform: "scale(1.1)", color: "#ffd700" },
-            }}
-          />
-        </IconButton>
+      <AppBar position="absolute" sx={{ background: "transparent", boxShadow: "none", zIndex: 10 }}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          {/* Logo and Menu */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton component={Link} to="/" sx={{ marginLeft: "10px" }}>
+              <SportsSoccerIcon sx={{ fontSize: 45, color: "#fff" }} />
+            </IconButton>
+            <Button sx={{ color: "white", fontWeight: "bold" }} onClick={handleMenuOpen}>
+              Menu
+            </Button>
+            <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose}>
+              <MenuItem component={Link} to="/players" onClick={handleMenuClose}>
+                Players
+              </MenuItem>
+              <MenuItem component={Link} to="/tournaments" onClick={handleMenuClose}>
+                Tournaments
+              </MenuItem>
+              <MenuItem component={Link} to="/booking" onClick={handleMenuClose}>
+                Booking
+              </MenuItem>
+              <MenuItem component={Link} to="/leaderboard" onClick={handleMenuClose}>
+                Leaderboard
+              </MenuItem>
+            </Menu>
+          </Box>
 
+          {/* Profile & Authentication */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {!isUserLoggedIn && !isAdminLoggedIn ? (
+              <>
+                <Button component={Link} to="/auth?mode=signup" sx={{ color: "white", fontWeight: "bold" }}>
+                  Signup
+                </Button>
+                <Button component={Link} to="/auth?mode=login" sx={{ color: "white", fontWeight: "bold" }}>
+                  Login
+                </Button>
+              </>
+            ) : (
+              <IconButton onClick={handleProfileOpen} sx={{ color: "white" }}>
+                <AccountCircleIcon fontSize="large" />
+              </IconButton>
+            )}
+            <Menu anchorEl={profileAnchorEl} open={Boolean(profileAnchorEl)} onClose={handleProfileClose}>
+              {isUserLoggedIn || isAdminLoggedIn ? (
+                <>
+                  <MenuItem component={Link} to={isAdminLoggedIn ? "/admin-profile" : "/user-profile"} onClick={handleProfileClose}>
+                    View Profile
+                  </MenuItem>
+                  <MenuItem onClick={logout}>Logout</MenuItem>
+                </>
+              ) : null}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {/* Hero Content with Search Bar */}
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 2,
+          color: "white",
+          textAlign: "center",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingTop: "0"
+        }}
+      >
+        <h1 style={{ fontSize: "2.5rem", marginBottom: "1.5rem" }}>Welcome to Futsal Booking</h1>
+        <p style={{ fontSize: "1.2rem", marginBottom: "2rem" }}>Find and book your favorite futsal courts easily.</p>
+        
         {/* Search Bar */}
-        <Box sx={{ width: "30%", margin: "auto" }}>
+        <Box 
+          sx={{ 
+            width: "50%",
+            maxWidth: "700px",
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            borderRadius: '12px',
+            padding: '15px',
+            backdropFilter: 'blur(8px)'
+          }}
+        >
           <Autocomplete
             onChange={handleChange}
             freeSolo
@@ -78,88 +169,29 @@ const Header = () => {
               <TextField
                 {...params}
                 placeholder="Search Futsal Courts"
-                variant="standard"
+                variant="outlined"
                 sx={{
                   width: "100%",
-                  "& input": {
-                    color: "white",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                  },
-                  "& .MuiInput-underline:before": {
-                    borderBottomColor: "white",
-                  },
-                  "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
-                    borderBottomColor: "#ffd700",
-                  },
-                  "& .MuiInput-underline:after": {
-                    borderBottomColor: "#ffcc00",
-                  },
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: 'white',
+                    borderRadius: '8px',
+                    "& fieldset": {
+                      borderColor: "transparent"
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "transparent"
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "transparent"
+                    }
+                  }
                 }}
               />
             )}
           />
         </Box>
-
-        {/* Navigation Tabs */}
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Tabs
-            textColor="inherit"
-            indicatorColor="primary"
-            value={value}
-            onChange={(e, val) => setValue(val)}
-            sx={{
-              "& .MuiTab-root": {
-                color: "white",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                fontSize: "14px",
-                transition: "color 0.3s ease-in-out",
-                "&:hover": {
-                  color: "#ffd700",
-                },
-              },
-              "& .MuiTabs-indicator": {
-                backgroundColor: "#ffd700",
-              },
-            }}
-          >
-            <Tab component={Link} to="/futsalCourts" label="Futsal Courts" />
-            {!isAdminLoggedIn && !isUserLoggedIn && (
-              <>
-                <Tab component={Link} to="/admin" label="Admin" />
-                <Tab component={Link} to="/auth" label="Login" />
-              </>
-            )}
-            {isUserLoggedIn && (
-              <>
-                <Tab component={Link} to="/user" label="Profile" />
-                <Tab
-                  component={Link}
-                  to="/"
-                  label="Logout"
-                  onClick={() => logout(false)}
-                  sx={{ color: "#ffcc00", "&:hover": { color: "#ff9900" } }}
-                />
-              </>
-            )}
-            {isAdminLoggedIn && (
-              <>
-                <Tab component={Link} to="/add" label="Add Futsal Court" />
-                <Tab component={Link} to="/user-admin" label="Profile" />
-                <Tab
-                  component={Link}
-                  to="/"
-                  label="Logout"
-                  onClick={() => logout(true)}
-                  sx={{ color: "#ffcc00", "&:hover": { color: "#ff9900" } }}
-                />
-              </>
-            )}
-          </Tabs>
-        </Box>
-      </Toolbar>
-    </AppBar>
+      </Box>
+    </Box>
   );
 };
 

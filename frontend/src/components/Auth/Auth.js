@@ -10,21 +10,40 @@ const Auth = () => {
   const dispatch = useDispatch();
 
   const onResReceived = (data) => {
-    if (!data || !data.id) {
+    if (!data) {
+      console.error("No response from server");
+      return;
+    }
+
+    // Handle both login and signup responses
+    const userId = data.id;
+    const token = data.token;
+
+    if (!userId) {
       console.error("Invalid response from server:", data);
       return;
     }
-    console.log(data);
+
+    console.log("Authentication successful:", data);
     dispatch(userActions.login());
-    localStorage.setItem("userId", data.id);
-    navigate("/");
+    localStorage.setItem("userId", userId);
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+    
+    // Navigate to home page without query parameters
+    navigate("/", { replace: true });
   };
 
-  const getData = (data) => {
-    console.log(data);
-    sendUserAuthRequest(data.inputs, data.signup)
-      .then(onResReceived)
-      .catch((err) => console.log(err));
+  const getData = async (data) => {
+    try {
+      console.log("Sending auth request:", data);
+      const response = await sendUserAuthRequest(data.inputs, data.signup);
+      onResReceived(response);
+    } catch (err) {
+      console.error("Authentication error:", err.response?.data || err.message);
+      throw err;
+    }
   };
 
   return (
