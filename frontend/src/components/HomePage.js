@@ -1,18 +1,17 @@
 import React from 'react';
-import { 
-  Box, 
-  Container, 
-  Typography, 
-  Button, 
-  Grid, 
-  Card, 
-  CardMedia, 
-  CardContent, 
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
   IconButton,
   Paper,
   Rating,
-  TextField,
-  Chip
+  TextField
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -98,12 +97,12 @@ const HomePage = () => {
         <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 'bold' }}>
           Featured Courts Near You.
         </Typography>
-        
+
         <Grid container spacing={3}>
           {featuredCourts.map((court) => (
             <Grid item xs={12} sm={6} md={4} key={court.id}>
-              <Card 
-                sx={{ 
+              <Card
+                sx={{
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
@@ -213,10 +212,10 @@ const HomePage = () => {
               { icon: <EmojiEventsIcon />, title: "Play!", description: "Confirm booking and enjoy your game" }
             ].map((step, index) => (
               <Grid item xs={12} md={4} key={index}>
-                <Paper 
-                  elevation={0} 
-                  sx={{ 
-                    p: 3, 
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 3,
                     textAlign: 'center',
                     bgcolor: 'transparent',
                     border: '2px solid #ff5722',
@@ -270,9 +269,9 @@ const HomePage = () => {
           <Grid container spacing={3}>
             {tournaments.map((tournament, index) => (
               <Grid item xs={12} md={6} key={index}>
-                <Card sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
+                <Card sx={{
+                  display: 'flex',
+                  alignItems: 'center',
                   p: 2,
                   bgcolor: '#f5f5f5'
                 }}>
@@ -321,7 +320,7 @@ const HomePage = () => {
               size="small"
               sx={{ width: { xs: '100%', sm: '300px' } }}
             />
-            <Button 
+            <Button
               variant="contained"
               sx={{
                 bgcolor: '#ff5722',
