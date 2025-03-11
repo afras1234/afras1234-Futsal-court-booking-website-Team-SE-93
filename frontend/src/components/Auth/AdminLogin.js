@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { adminSignup } from "../../api-helpers/api-helpers";
+import { sendAdminAuthRequest } from "../../api-helpers/api-helpers";
 import { adminActions } from "../../store";
 import { Box, Button, Dialog, FormLabel, IconButton, TextField, Typography, Alert } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { Link } from "react-router-dom";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const labelStyle = { mt: 1, mb: 1 };
 
-const Admin = ({ onClose }) => {
+const AdminLogin = ({ onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
-    name: "",
     email: "",
     password: "",
-    phone: "",
-    secretKey: "",
   });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,7 +34,7 @@ const Admin = ({ onClose }) => {
     setIsSubmitting(true);
 
     // Client-side validation
-    if (!inputs.name || !inputs.email || !inputs.password || !inputs.phone || !inputs.secretKey) {
+    if (!inputs.email || !inputs.password) {
       setError("All fields are required");
       setIsSubmitting(false);
       return;
@@ -49,15 +48,8 @@ const Admin = ({ onClose }) => {
       return;
     }
 
-    // Password length validation
-    if (inputs.password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
-      const res = await adminSignup(inputs);
+      const res = await sendAdminAuthRequest(inputs);
       if (res && res.token && res.id) {
         localStorage.setItem("adminId", res.id);
         localStorage.setItem("token", res.token);
@@ -66,33 +58,33 @@ const Admin = ({ onClose }) => {
         if (onClose) onClose();
       }
     } catch (err) {
-      console.error("Admin signup error:", err);
-      setError(err.response?.data?.message || "Error during signup. Please try again.");
+      console.error("Admin login error:", err);
+      setError(err.response?.data?.message || "Error during login. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <Dialog
-  PaperProps={{
-    style: {
-      borderRadius: 20,
-      background: 'rgba(255, 255, 255, 0.1)',  // semi-transparent white for glass effect
-      color: 'white',
-      backdropFilter: 'blur(10px)',  // applies blur to the background behind the dialog
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',  // subtle shadow for depth
-    },
-  }}
-  open={true}
->
+    <Dialog 
+    PaperProps={{
+      style: {
+        borderRadius: 20,
+        background: 'rgba(255, 255, 255, 0.1)',  // semi-transparent white for glass effect
+        color: 'white',
+        backdropFilter: 'blur(10px)',  // applies blur to the background behind the dialog
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',  // subtle shadow for depth
+      },
+    }}
+      open={true}
+    >
       <Box sx={{ ml: "auto", padding: 1 }}>
         <IconButton onClick={() => navigate("/")} sx={{ color: "white" }}>
           <CloseRoundedIcon />
         </IconButton>
       </Box>
       <Typography variant="h4" textAlign="center" sx={{ color: "white", mb: 3 }}>
-        Admin Signup
+        Admin Login
       </Typography>
       <form onSubmit={handleSubmit}>
         <Box
@@ -110,24 +102,6 @@ const Admin = ({ onClose }) => {
             </Alert>
           )}
 
-          <FormLabel sx={{ ...labelStyle, color: "white" }}>Name</FormLabel>
-          <TextField
-            value={inputs.name}
-            onChange={handleChange}
-            margin="normal"
-            variant="standard"
-            type="text"
-            name="name"
-            required
-            sx={{
-              "& .MuiInputBase-root": {
-                color: "white",
-                "&:before": { borderColor: "rgba(255, 255, 255, 0.5)" },
-                "&:hover:not(.Mui-disabled):before": { borderColor: "white" },
-              },
-              "& .MuiInputLabel-root": { color: "white" },
-            }}
-          />
           <FormLabel sx={{ ...labelStyle, color: "white" }}>Email</FormLabel>
           <TextField
             value={inputs.email}
@@ -164,67 +138,58 @@ const Admin = ({ onClose }) => {
               "& .MuiInputLabel-root": { color: "white" },
             }}
           />
-          <FormLabel sx={{ ...labelStyle, color: "white" }}>Phone</FormLabel>
-          <TextField
-            value={inputs.phone}
-            onChange={handleChange}
-            margin="normal"
-            variant="standard"
-            type="text"
-            name="phone"
-            required
-            sx={{
-              "& .MuiInputBase-root": {
-                color: "white",
-                "&:before": { borderColor: "rgba(255, 255, 255, 0.5)" },
-                "&:hover:not(.Mui-disabled):before": { borderColor: "white" },
-              },
-              "& .MuiInputLabel-root": { color: "white" },
-            }}
-          />
-          <FormLabel sx={{ ...labelStyle, color: "white" }}>Secret Key</FormLabel>
-          <TextField
-            value={inputs.secretKey}
-            onChange={handleChange}
-            margin="normal"
-            variant="standard"
-            type="password"
-            name="secretKey"
-            required
-            sx={{
-              "& .MuiInputBase-root": {
-                color: "white",
-                "&:before": { borderColor: "rgba(255, 255, 255, 0.5)" },
-                "&:hover:not(.Mui-disabled):before": { borderColor: "white" },
-              },
-              "& .MuiInputLabel-root": { color: "white" },
-            }}
-          />
+
           <Button
-            sx={{ 
-              mt: 2, 
-              borderRadius: 10, 
+            type="submit"
+            variant="contained"
+            sx={{
+              mt: 3,
+              mb: 2,
+              borderRadius: 2,
               bgcolor: "#ff6700",
               color: "white",
               "&:hover": {
                 bgcolor: "#ff8533",
               },
-              "&:disabled": {
-                bgcolor: "rgba(255, 103, 0, 0.5)",
-                color: "rgba(255, 255, 255, 0.7)",
-              },
             }}
-            type="submit"
-            fullWidth
-            variant="contained"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Creating Account..." : "Create Account"}
+            {isSubmitting ? "Logging in..." : "Login"}
           </Button>
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
+            <Link to="/admin/signup" style={{ textDecoration: 'none' }}>
+              <Button
+                startIcon={<AdminPanelSettingsIcon />}
+                sx={{
+                  color: "white",
+                  border: "1px solid white",
+                  "&:hover": {
+                    bgcolor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
+              >
+                Admin Signup
+              </Button>
+            </Link>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <Button
+                sx={{
+                  color: "white",
+                  border: "1px solid white",
+                  "&:hover": {
+                    bgcolor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
+              >
+                Back to Home
+              </Button>
+            </Link>
+          </Box>
         </Box>
       </form>
     </Dialog>
   );
 };
 
-export default Admin;
+export default AdminLogin;

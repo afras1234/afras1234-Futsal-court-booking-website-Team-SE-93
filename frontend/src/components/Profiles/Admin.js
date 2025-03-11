@@ -19,7 +19,7 @@ const Admin = () => {
       display="flex"
       flexDirection="row"
       sx={{
-        background: "linear-gradient(to right, #0B3D91, #1E90FF)",
+        background: "#FFFFFF",
         color: "white",
         padding: 4,
       }}

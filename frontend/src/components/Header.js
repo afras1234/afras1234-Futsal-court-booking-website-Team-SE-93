@@ -9,9 +9,11 @@ import {
   Menu,
   MenuItem,
   Button,
+  Divider,
 } from "@mui/material";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { getAllFutsalCourts } from "../api-helpers/api-helpers";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +27,7 @@ const Header = () => {
   const [futsalCourts, setFutsalCourts] = useState([]);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+  const [authAnchorEl, setAuthAnchorEl] = useState(null);
 
   useEffect(() => {
     getAllFutsalCourts()
@@ -36,6 +39,9 @@ const Header = () => {
 
   const logout = () => {
     dispatch(isAdminLoggedIn ? adminActions.logout() : userActions.logout());
+    localStorage.removeItem("userId");
+    localStorage.removeItem("adminId");
+    localStorage.removeItem("token");
     handleProfileClose();
     navigate("/");
   };
@@ -52,6 +58,8 @@ const Header = () => {
   const handleMenuClose = () => setMenuAnchorEl(null);
   const handleProfileOpen = (event) => setProfileAnchorEl(event.currentTarget);
   const handleProfileClose = () => setProfileAnchorEl(null);
+  const handleAuthOpen = (event) => setAuthAnchorEl(event.currentTarget);
+  const handleAuthClose = () => setAuthAnchorEl(null);
 
   return (
     <Box
@@ -72,7 +80,7 @@ const Header = () => {
           height: "100%",
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           zIndex: 1,
-          pointerEvents: "none", // ✅ Prevents blocking UI elements
+          pointerEvents: "none",
         },
       }}
     >
@@ -83,22 +91,52 @@ const Header = () => {
             <IconButton component={Link} to="/" sx={{ marginLeft: "10px" }}>
               <SportsSoccerIcon sx={{ fontSize: 45, color: "#fff" }} />
             </IconButton>
-            <Button sx={{ color: "white", fontWeight: "bold" }} onClick={handleMenuOpen}>
+            <Button 
+              sx={{ 
+                color: "white", 
+                fontWeight: "bold",
+                "&:hover": {
+                  bgcolor: "rgba(255, 255, 255, 0.1)"
+                }
+              }} 
+              onClick={handleMenuOpen}
+            >
               Menu
             </Button>
-            <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose}>
-              <MenuItem component={Link} to="/players" onClick={handleMenuClose}>
-                Players
+            <Menu 
+              anchorEl={menuAnchorEl} 
+              open={Boolean(menuAnchorEl)} 
+              onClose={handleMenuClose}
+              PaperProps={{
+                sx: {
+                  mt: 1.5,
+                  bgcolor: "rgba(43, 45, 66, 0.95)",
+                  color: "white",
+                  "& .MuiMenuItem-root": {
+                    color: "white",
+                    "&:hover": {
+                      bgcolor: "rgba(255, 255, 255, 0.1)",
+                    },
+                  },
+                },
+              }}
+            >
+              <MenuItem 
+                component={Link} 
+                to="/futsalCourts" 
+                onClick={handleMenuClose}
+              >
+                Futsal Courts
               </MenuItem>
-              <MenuItem component={Link} to="/tournaments" onClick={handleMenuClose}>
-                Tournaments
-              </MenuItem>
-              <MenuItem component={Link} to="/booking" onClick={handleMenuClose}>
-                Booking
-              </MenuItem>
-              <MenuItem component={Link} to="/leaderboard" onClick={handleMenuClose}>
-                Leaderboard
-              </MenuItem>
+              {isAdminLoggedIn && (
+                <MenuItem 
+                  component={Link} 
+                  to="/add" 
+                  onClick={handleMenuClose}
+                >
+                  Add Futsal Court
+                </MenuItem>
+              )}
             </Menu>
           </Box>
 
@@ -106,28 +144,104 @@ const Header = () => {
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {!isUserLoggedIn && !isAdminLoggedIn ? (
               <>
-                <Button component={Link} to="/auth?mode=signup" sx={{ color: "white", fontWeight: "bold" }}>
-                  Signup
+                <Button
+                  onClick={handleAuthOpen}
+                  sx={{ 
+                    color: "white", 
+                    fontWeight: "bold",
+                    "&:hover": {
+                      bgcolor: "rgba(255, 255, 255, 0.1)"
+                    }
+                  }}
+                  startIcon={<AccountCircleIcon />}
+                >
+                  Login / Signup
                 </Button>
-                <Button component={Link} to="/auth?mode=login" sx={{ color: "white", fontWeight: "bold" }}>
-                  Login
-                </Button>
+                <Menu
+                  anchorEl={authAnchorEl}
+                  open={Boolean(authAnchorEl)}
+                  onClose={handleAuthClose}
+                  PaperProps={{
+                    sx: {
+                      mt: 1.5,
+                      bgcolor: "rgba(43, 45, 66, 0.95)",
+                      color: "white",
+                      "& .MuiMenuItem-root": {
+                        color: "white",
+                        "&:hover": {
+                          bgcolor: "rgba(255, 255, 255, 0.1)",
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem 
+                    onClick={() => {
+                      navigate("/auth");
+                      handleAuthClose();
+                    }}
+                  >
+                    <AccountCircleIcon sx={{ mr: 1 }} />
+                    User Login
+                  </MenuItem>
+                  <MenuItem 
+                    onClick={() => {
+                      navigate("/admin/login");
+                      handleAuthClose();
+                    }}
+                  >
+                    <AdminPanelSettingsIcon sx={{ mr: 1 }} />
+                    Admin Login
+                  </MenuItem>
+                </Menu>
               </>
             ) : (
-              <IconButton onClick={handleProfileOpen} sx={{ color: "white" }}>
-                <AccountCircleIcon fontSize="large" />
-              </IconButton>
-            )}
-            <Menu anchorEl={profileAnchorEl} open={Boolean(profileAnchorEl)} onClose={handleProfileClose}>
-              {isUserLoggedIn || isAdminLoggedIn ? (
-                <>
-                  <MenuItem component={Link} to={isAdminLoggedIn ? "/admin-profile" : "/user-profile"} onClick={handleProfileClose}>
-                    View Profile
+              <>
+                <IconButton 
+                  onClick={handleProfileOpen} 
+                  sx={{ 
+                    color: "white",
+                    "&:hover": {
+                      bgcolor: "rgba(255, 255, 255, 0.1)"
+                    }
+                  }}
+                >
+                  {isAdminLoggedIn ? (
+                    <AdminPanelSettingsIcon fontSize="large" />
+                  ) : (
+                    <AccountCircleIcon fontSize="large" />
+                  )}
+                </IconButton>
+                <Menu 
+                  anchorEl={profileAnchorEl} 
+                  open={Boolean(profileAnchorEl)} 
+                  onClose={handleProfileClose}
+                  PaperProps={{
+                    sx: {
+                      mt: 1.5,
+                      bgcolor: "rgba(43, 45, 66, 0.95)",
+                      color: "white",
+                      "& .MuiMenuItem-root": {
+                        color: "white",
+                        "&:hover": {
+                          bgcolor: "rgba(255, 255, 255, 0.1)",
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem onClick={() => {
+                    navigate(isAdminLoggedIn ? "/admin-profile" : "/user-profile");
+                    handleProfileClose();
+                  }}>
+                    Profile
                   </MenuItem>
-                  <MenuItem onClick={logout}>Logout</MenuItem>
-                </>
-              ) : null}
-            </Menu>
+                  <MenuItem onClick={logout}>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

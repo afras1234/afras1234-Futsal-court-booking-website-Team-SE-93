@@ -2,7 +2,9 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: 'http://localhost:5000',
-  withCredentials: true
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
 // Add request interceptor to add auth token
@@ -12,7 +14,18 @@ API.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
+}, (error) => {
+  return Promise.reject(error);
 });
+
+// Add response interceptor to handle errors
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API Error:", error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
 
 // Password Reset Request
 export const requestPasswordReset = async (email) => {
@@ -41,7 +54,7 @@ export const getAllFutsalCourts = async () => {
     const res = await API.get("/futsalCourt"); 
     return res.data || { futsalCourts: [] }; 
   } catch (err) {
-    console.error("No Data", err);
+    console.error("Error fetching futsal courts:", err);
     return { futsalCourts: [] }; 
   }
 };
@@ -56,21 +69,19 @@ export const sendUserAuthRequest = async (data, signup) => {
       phone: signup ? data.phone : "",
     });
 
-    console.log('Auth response:', res.data);
-    
     if (res.status !== 200 && res.status !== 201) {
-      throw new Error("Failed to authenticate");
+      throw new Error(res.data?.message || "Failed to authenticate");
     }
 
     const resData = res.data;
     if (resData.token) {
       localStorage.setItem("token", resData.token);
+      localStorage.setItem("userId", resData.id);
     }
-    localStorage.setItem("userId", resData.id);
 
     return resData;
   } catch (err) {
-    console.error("Error in authentication:", err);
+    console.error("Error in user authentication:", err);
     throw err;
   }
 };
@@ -81,9 +92,48 @@ export const sendAdminAuthRequest = async (data) => {
       email: data.email,
       password: data.password,
     });
-    return res.data;
+
+    if (res.status !== 200) {
+      throw new Error(res.data?.message || "Failed to authenticate");
+    }
+
+    const resData = res.data;
+    if (resData.token) {
+      localStorage.setItem("token", resData.token);
+      localStorage.setItem("adminId", resData.id);
+    }
+
+    return resData;
   } catch (err) {
-    console.error("Unexpected Error", err);
+    console.error("Error in admin authentication:", err);
+    throw err;
+  }
+};
+
+export const adminSignup = async (data) => {
+  try {
+    const res = await API.post("/admin/signup", {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      phone: data.phone,
+      secretKey: data.secretKey,
+    });
+    
+    if (res.status !== 201) {
+      throw new Error(res.data?.message || "Failed to signup");
+    }
+
+    const resData = res.data;
+    if (resData.token) {
+      localStorage.setItem("token", resData.token);
+      localStorage.setItem("adminId", resData.id);
+    }
+    
+    return resData;
+  } catch (err) {
+    console.error("Error in admin signup:", err);
+    throw err;
   }
 };
 
@@ -92,7 +142,8 @@ export const getFutsalCourtDetails = async (id) => {
     const res = await API.get(`/futsalCourt/${id}`);
     return res.data;
   } catch (err) {
-    console.error("Unexpected Error", err);
+    console.error("Error fetching futsal court details:", err);
+    throw err;
   }
 };
 
@@ -106,7 +157,8 @@ export const newBooking = async (data) => {
     });
     return res.data;
   } catch (err) {
-    console.error("Unexpected Error", err);
+    console.error("Error creating booking:", err);
+    throw err;
   }
 };
 
@@ -116,7 +168,8 @@ export const getUserBooking = async () => {
     const res = await API.get(`/user/bookings/${id}`);
     return res.data;
   } catch (err) {
-    console.error("Unexpected Error", err);
+    console.error("Error fetching user bookings:", err);
+    throw err;
   }
 };
 
@@ -125,7 +178,8 @@ export const deleteBooking = async (id) => {
     const res = await API.delete(`/booking/${id}`);
     return res.data;
   } catch (err) {
-    console.error("Unexpected Error", err);
+    console.error("Error deleting booking:", err);
+    throw err;
   }
 };
 
@@ -135,7 +189,8 @@ export const getUserDetails = async () => {
     const res = await API.get(`/user/${id}`);
     return res.data;
   } catch (err) {
-    console.error("Unexpected Error", err);
+    console.error("Error fetching user details:", err);
+    throw err;
   }
 };
 
@@ -160,7 +215,8 @@ export const addFutsalCourt = async (data) => {
     );
     return res.data;
   } catch (err) {
-    console.error("Unexpected Error Occurred", err);
+    console.error("Error adding futsal court:", err);
+    throw err;
   }
 };
 
@@ -170,7 +226,8 @@ export const getAdminById = async () => {
     const res = await API.get(`/admin/${adminId}`);
     return res.data;
   } catch (err) {
-    console.error("Unexpected Error Occurred", err);
+    console.error("Error fetching admin details:", err);
+    throw err;
   }
 };
 
@@ -184,7 +241,7 @@ export const updateUserProfile = async (formData) => {
       }
     });
     if (res.status !== 200) {
-      throw new Error("Failed to update profile");
+      throw new Error(res.data?.message || "Failed to update profile");
     }
     return res.data;
   } catch (err) {
