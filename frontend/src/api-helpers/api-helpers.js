@@ -249,3 +249,58 @@ export const updateUserProfile = async (formData) => {
     throw err;
   }
 };
+
+// Tournament related API functions
+export const createTournament = async (tournamentData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await API.post("/tournaments", tournamentData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.status !== 201) {
+      throw new Error(res.data?.message || "Failed to create tournament");
+    }
+    return res.data;
+  } catch (err) {
+    console.error("Error creating tournament:", err);
+    throw err;
+  }
+};
+
+export const updateTournament = async (id, tournamentData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await API.put(`/tournaments/${id}`, tournamentData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.status !== 200) {
+      throw new Error(res.data?.message || "Failed to update tournament");
+    }
+    return res.data;
+  } catch (err) {
+    console.error("Error updating tournament:", err);
+    throw err;
+  }
+};
+
+export const getUserTournaments = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await API.get("/tournaments/user", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.status !== 200) {
+      throw new Error(res.data?.message || "Failed to fetch tournaments");
+    }
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching user tournaments:", err);
+    throw err;
+  }
+};
