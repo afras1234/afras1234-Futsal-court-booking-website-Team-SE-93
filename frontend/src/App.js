@@ -10,7 +10,8 @@ import Auth from "./components/Auth/Auth";
 import Booking from "./components/Bookings/Booking";
 import AddFutsalCourt from "./components/FutsalCourts/AddFutsalCourt";
 import AdminProfile from "./profile/AdminProfile";
-import UserProfile from "./profile/UserProfile";
+import Profile from "./components/Profile";
+import TournamentForm from "./components/TournamentForm";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { adminActions, userActions } from "./store";
@@ -51,8 +52,9 @@ function App() {
         {/* User Protected routes */}
         {isUserLoggedIn && (
           <>
-            <Route path="/user-profile" element={<UserProfile />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/booking/:id" element={<Booking />} />
+            <Route path="/create-tournament" element={<TournamentForm />} />
           </>
         )}
 

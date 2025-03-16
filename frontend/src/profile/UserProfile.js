@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import {
-  deleteBooking,
-  getUserBooking,
   getUserDetails,
   updateUserProfile
 } from "../api-helpers/api-helpers";
@@ -9,34 +8,37 @@ import {
   Box,
   Container,
   Typography,
-  Card,
-  CardContent,
   Avatar,
-  Grid,
   Paper,
   Button,
-  Divider,
   IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Chip,
   Alert,
-  TextField
+  TextField,
+  Tab,
+  Tabs,
+  Grid,
+  Card,
+  CardContent,
+  Chip,
+  CircularProgress
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { format } from "date-fns";
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import axios from 'axios';
 
 const UserProfile = () => {
-  const [bookings, setBookings] = useState([]);
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedBookingId, setSelectedBookingId] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [tournaments, setTournaments] = useState([]);
+  const [tournamentsLoading, setTournamentsLoading] = useState(false);
   const [editForm, setEditForm] = useState({
     name: "",
     phone: "",
@@ -51,15 +53,9 @@ const UserProfile = () => {
         setLoading(true);
         setError(null);
 
-        const [bookingsRes, userRes] = await Promise.all([
-          getUserBooking(),
-          getUserDetails(),
-        ]);
-
-        setBookings(bookingsRes?.bookings?.filter(b => b && b.futsalCourt) || []);
+        const userRes = await getUserDetails();
         setUser(userRes?.user || null);
         
-        // Initialize edit form with user data
         if (userRes?.user) {
           setEditForm({
             name: userRes.user.name || "",
@@ -78,6 +74,33 @@ const UserProfile = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchTournaments = async () => {
+      if (activeTab === 1) {
+        try {
+          setTournamentsLoading(true);
+          const token = localStorage.getItem('token');
+          const response = await axios.get('http://localhost:5000/tournaments/user', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setTournaments(response.data);
+        } catch (err) {
+          console.error('Error fetching tournaments:', err);
+        } finally {
+          setTournamentsLoading(false);
+        }
+      }
+    };
+
+    fetchTournaments();
+  }, [activeTab]);
+
+  const handleCreateTournament = () => {
+    navigate('/create-tournament');
+  };
 
   const handleEditClick = () => {
     setEditDialogOpen(true);
@@ -119,24 +142,31 @@ const UserProfile = () => {
     }
   };
 
-  const handleDeleteClick = (id) => {
-    setSelectedBookingId(id);
-    setDeleteDialogOpen(true);
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
   };
 
-  const handleDeleteConfirm = async () => {
-    try {
-      await deleteBooking(selectedBookingId);
-      setBookings((prev) => prev.filter((booking) => booking._id !== selectedBookingId));
-      setDeleteDialogOpen(false);
-    } catch (err) {
-      console.error("Error deleting booking:", err);
-      setError("Failed to delete booking. Please try again.");
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'upcoming':
+        return '#2196f3';
+      case 'in_progress':
+        return '#4caf50';
+      case 'completed':
+        return '#9e9e9e';
+      case 'closed':
+        return '#f44336';
+      default:
+        return '#757575';
     }
   };
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
@@ -150,27 +180,141 @@ const UserProfile = () => {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-        <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-          <Box display="flex" alignItems="center">
-            <Avatar
-              src={user.profileImage}
-              sx={{ width: 100, height: 100, mr: 2 }}
-            />
-            <Box>
-              <Typography variant="h5">{user.name}</Typography>
-              <Typography color="textSecondary">{user.email}</Typography>
-              {user.phone && (
-                <Typography color="textSecondary">{user.phone}</Typography>
-              )}
-              {user.bio && (
-                <Typography sx={{ mt: 1 }}>{user.bio}</Typography>
-              )}
-            </Box>
-          </Box>
-          <IconButton onClick={handleEditClick}>
-            <EditIcon />
-          </IconButton>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs value={activeTab} onChange={handleTabChange}>
+            <Tab label="Profile" />
+            <Tab label="Tournaments" icon={<EmojiEventsIcon />} iconPosition="start" />
+          </Tabs>
         </Box>
+
+        {activeTab === 0 && (
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+            <Box display="flex" alignItems="center">
+              <Avatar
+                src={user.profileImage}
+                sx={{ width: 100, height: 100, mr: 2 }}
+              />
+              <Box>
+                <Typography variant="h5">{user.name}</Typography>
+                <Typography color="textSecondary">{user.email}</Typography>
+                {user.phone && (
+                  <Typography color="textSecondary">{user.phone}</Typography>
+                )}
+                {user.bio && (
+                  <Typography sx={{ mt: 1 }}>{user.bio}</Typography>
+                )}
+              </Box>
+            </Box>
+            <IconButton onClick={handleEditClick}>
+              <EditIcon />
+            </IconButton>
+          </Box>
+        )}
+
+        {activeTab === 1 && (
+          <Box>
+            <Box sx={{ mb: 3 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleCreateTournament}
+                startIcon={<EmojiEventsIcon />}
+              >
+                Create Tournament
+              </Button>
+            </Box>
+
+            {tournamentsLoading ? (
+              <Box display="flex" justifyContent="center" py={4}>
+                <CircularProgress />
+              </Box>
+            ) : tournaments.length === 0 ? (
+              <Typography variant="h6" align="center" color="textSecondary" py={4}>
+                You haven't registered for any tournaments yet
+              </Typography>
+            ) : (
+              <Grid container spacing={3}>
+                {tournaments.map((tournament) => {
+                  const registration = tournament.registrations.find(
+                    reg => reg.userId === localStorage.getItem('userId')
+                  );
+                  
+                  return (
+                    <Grid item xs={12} key={tournament._id}>
+                      <Card 
+                        sx={{ 
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                          transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                          '&:hover': {
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+                          }
+                        }}
+                      >
+                        <CardContent>
+                          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                            <Typography variant="h6" component="h2" sx={{ color: '#ff5722' }}>
+                              {tournament.name}
+                            </Typography>
+                            <Chip 
+                              label={tournament.status.toUpperCase()}
+                              sx={{ 
+                                bgcolor: getStatusColor(tournament.status),
+                                color: 'white'
+                              }}
+                            />
+                          </Box>
+                          
+                          <Typography variant="body2" color="text.secondary" paragraph>
+                            {tournament.description}
+                          </Typography>
+
+                          <Grid container spacing={2}>
+                            <Grid item xs={12} md={6}>
+                              <Box sx={{ mt: 2 }}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                  Registration Details:
+                                </Typography>
+                                <Typography variant="body2">
+                                  Team Name: {registration?.teamName}
+                                </Typography>
+                                <Typography variant="body2">
+                                  Captain: {registration?.captainName}
+                                </Typography>
+                                <Typography variant="body2">
+                                  Players: {registration?.playerCount}
+                                </Typography>
+                                <Typography variant="body2">
+                                  Registration Date: {new Date(registration?.registrationDate).toLocaleDateString()}
+                                </Typography>
+                              </Box>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                              <Box sx={{ mt: 2 }}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                  Tournament Info:
+                                </Typography>
+                                <Typography variant="body2">
+                                  Start: {new Date(tournament.startDate).toLocaleDateString()}
+                                </Typography>
+                                <Typography variant="body2">
+                                  End: {new Date(tournament.endDate).toLocaleDateString()}
+                                </Typography>
+                                <Typography variant="body2">
+                                  Prize Pool: Rs. {tournament.prizePool}
+                                </Typography>
+                              </Box>
+                            </Grid>
+                          </Grid>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            )}
+          </Box>
+        )}
       </Paper>
 
       {/* Edit Profile Dialog */}
@@ -188,25 +332,20 @@ const UserProfile = () => {
             <label htmlFor="profile-image-input">
               <Box
                 sx={{
-                  width: 150,
-                  height: 150,
+                  width: 200,
+                  height: 200,
                   border: '1px dashed grey',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  mb: 2,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  mb: 2
                 }}
               >
-                {previewImage ? (
-                  <img
-                    src={previewImage}
-                    alt="Preview"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <Typography>Click to upload image</Typography>
-                )}
+                <Avatar
+                  src={previewImage || user.profileImage}
+                  sx={{ width: '100%', height: '100%' }}
+                />
               </Box>
             </label>
             <TextField
@@ -235,74 +374,8 @@ const UserProfile = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleEditClose}>Cancel</Button>
-          <Button onClick={handleEditSubmit} variant="contained">
+          <Button onClick={handleEditSubmit} variant="contained" color="primary">
             Save Changes
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Bookings Section */}
-      <Typography variant="h5" sx={{ mb: 3 }}>
-        Your Bookings
-      </Typography>
-
-      <Grid container spacing={3}>
-        {bookings.length === 0 ? (
-          <Grid item xs={12}>
-            <Paper sx={{ p: 3, textAlign: "center" }}>
-              <Typography variant="body1" color="textSecondary">
-                No bookings found. Book a futsal court to get started!
-              </Typography>
-            </Paper>
-          </Grid>
-        ) : (
-          bookings.map((booking) => (
-            <Grid item xs={12} md={6} key={booking._id}>
-              <Card sx={{ height: "100%" }}>
-                <CardContent>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                    <Typography variant="h6" component="div">
-                      {booking.futsalCourt.title}
-                    </Typography>
-                    <IconButton
-                      onClick={() => handleDeleteClick(booking._id)}
-                      color="error"
-                      size="small"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                  <Divider sx={{ my: 1 }} />
-                  <Typography color="textSecondary" gutterBottom>
-                    Date: {format(new Date(booking.date), "PPP")}
-                  </Typography>
-                  <Typography color="textSecondary" gutterBottom>
-                    Time: {booking.timeSlot}
-                  </Typography>
-                  <Box sx={{ mt: 2 }}>
-                    <Chip
-                      label={booking.status || "Confirmed"}
-                      color={booking.status === "cancelled" ? "error" : "success"}
-                      size="small"
-                    />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        )}
-      </Grid>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-        <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent>
-          Are you sure you want to cancel this booking? This action cannot be undone.
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
-            Delete
           </Button>
         </DialogActions>
       </Dialog>

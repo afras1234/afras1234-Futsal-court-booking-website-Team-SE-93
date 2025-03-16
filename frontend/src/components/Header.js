@@ -9,6 +9,10 @@ import {
   Menu,
   MenuItem,
   Button,
+<<<<<<< HEAD
+=======
+  Typography
+>>>>>>> 8eda37c6db0fc528a3f7ab46ea7cc396e6b40768
 } from "@mui/material";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -65,8 +69,8 @@ const Header = () => {
       sx={{
         position: "relative",
         width: "100%",
-        height: "60vh",
-        backgroundImage: `url("https://img.freepik.com/premium-photo/football-futsal-player-ball-futsal-floor-sports-background-indoor-soccer-sports-hall-youth-futsal-league-indoor-football-players-soccer-ball-generative-ai_117038-8122.jpg")`,
+        height: { xs: '70vh', sm: '60vh' },
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("https://img.freepik.com/premium-photo/football-futsal-player-ball-futsal-floor-sports-background-indoor-soccer-sports-hall-youth-futsal-league-indoor-football-players-soccer-ball-generative-ai_117038-8122.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -77,23 +81,43 @@ const Header = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%)',
           zIndex: 1,
           pointerEvents: "none",
         },
       }}
     >
-      <AppBar position="absolute" sx={{ background: "transparent", boxShadow: "none", zIndex: 10 }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+      <AppBar position="absolute" sx={{ background: 'transparent', boxShadow: 'none', zIndex: 10 }}>
+        <Toolbar 
+          sx={{ 
+            display: "flex", 
+            justifyContent: "space-between", 
+            px: { xs: 2, sm: 4 },
+            minHeight: { xs: 64, sm: 72 }
+          }}
+        >
           {/* Logo and Menu */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton component={Link} to="/" sx={{ marginLeft: "10px" }}>
-              <SportsSoccerIcon sx={{ fontSize: 45, color: "#fff" }} />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <IconButton 
+              component={Link} 
+              to="/" 
+              sx={{ 
+                p: { xs: 1, sm: 1.5 },
+                bgcolor: 'rgba(255, 255, 255, 0.1)',
+                '&:hover': {
+                  bgcolor: 'rgba(255, 255, 255, 0.2)'
+                }
+              }}
+            >
+              <SportsSoccerIcon sx={{ fontSize: { xs: 32, sm: 40 }, color: "#fff" }} />
             </IconButton>
             <Button 
               sx={{ 
                 color: "white", 
                 fontWeight: "bold",
+                px: 2,
+                py: 1,
+                borderRadius: 2,
                 "&:hover": {
                   bgcolor: "rgba(255, 255, 255, 0.1)"
                 }
@@ -108,10 +132,15 @@ const Header = () => {
               onClose={handleMenuClose}
               PaperProps={{
                 sx: {
-                  mt: 1.5,
+                  mt: 1,
                   bgcolor: "rgba(43, 45, 66, 0.95)",
+                  backdropFilter: 'blur(8px)',
                   color: "white",
+                  borderRadius: 2,
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
                   "& .MuiMenuItem-root": {
+                    px: 2,
+                    py: 1.5,
                     color: "white",
                     "&:hover": {
                       bgcolor: "rgba(255, 255, 255, 0.1)",
@@ -125,6 +154,7 @@ const Header = () => {
                 to="/futsalCourts"
                 onClick={handleMenuClose}
               >
+                <SportsSoccerIcon sx={{ mr: 1.5, fontSize: 20 }} />
                 Futsal Courts
               </MenuItem>
               {isAdminLoggedIn && (
@@ -133,6 +163,7 @@ const Header = () => {
                   to="/add"
                   onClick={handleMenuClose}
                 >
+                  <AdminPanelSettingsIcon sx={{ mr: 1.5, fontSize: 20 }} />
                   Add Futsal Court
                 </MenuItem>
               )}
@@ -148,8 +179,13 @@ const Header = () => {
                   sx={{
                     color: "white",
                     fontWeight: "bold",
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
                     "&:hover": {
-                      bgcolor: "rgba(255, 255, 255, 0.1)"
+                      bgcolor: "rgba(255, 255, 255, 0.1)",
+                      border: '1px solid rgba(255, 255, 255, 0.5)'
                     }
                   }}
                   startIcon={<AccountCircleIcon />}
@@ -162,10 +198,15 @@ const Header = () => {
                   onClose={handleAuthClose}
                   PaperProps={{
                     sx: {
-                      mt: 1.5,
+                      mt: 1,
                       bgcolor: "rgba(43, 45, 66, 0.95)",
+                      backdropFilter: 'blur(8px)',
                       color: "white",
+                      borderRadius: 2,
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
                       "& .MuiMenuItem-root": {
+                        px: 2,
+                        py: 1.5,
                         color: "white",
                         "&:hover": {
                           bgcolor: "rgba(255, 255, 255, 0.1)",
@@ -180,7 +221,7 @@ const Header = () => {
                       handleAuthClose();
                     }}
                   >
-                    <AccountCircleIcon sx={{ mr: 1 }} />
+                    <AccountCircleIcon sx={{ mr: 1.5, fontSize: 20 }} />
                     User Login
                   </MenuItem>
                   <MenuItem
@@ -189,26 +230,34 @@ const Header = () => {
                       handleAuthClose();
                     }}
                   >
-                    <AdminPanelSettingsIcon sx={{ mr: 1 }} />
+                    <AdminPanelSettingsIcon sx={{ mr: 1.5, fontSize: 20 }} />
                     Admin Login
                   </MenuItem>
                 </Menu>
               </>
             ) : (
               <>
+<<<<<<< HEAD
                 <IconButton
                   onClick={handleProfileOpen}
                   sx={{
+=======
+                <IconButton 
+                  onClick={handleProfileOpen}
+                  sx={{ 
+>>>>>>> 8eda37c6db0fc528a3f7ab46ea7cc396e6b40768
                     color: "white",
+                    p: { xs: 1, sm: 1.5 },
+                    bgcolor: 'rgba(255, 255, 255, 0.1)',
                     "&:hover": {
-                      bgcolor: "rgba(255, 255, 255, 0.1)"
+                      bgcolor: "rgba(255, 255, 255, 0.2)"
                     }
                   }}
                 >
                   {isAdminLoggedIn ? (
-                    <AdminPanelSettingsIcon fontSize="large" />
+                    <AdminPanelSettingsIcon sx={{ fontSize: { xs: 24, sm: 28 } }} />
                   ) : (
-                    <AccountCircleIcon fontSize="large" />
+                    <AccountCircleIcon sx={{ fontSize: { xs: 24, sm: 28 } }} />
                   )}
                 </IconButton>
                 <Menu
@@ -217,10 +266,15 @@ const Header = () => {
                   onClose={handleProfileClose}
                   PaperProps={{
                     sx: {
-                      mt: 1.5,
+                      mt: 1,
                       bgcolor: "rgba(43, 45, 66, 0.95)",
+                      backdropFilter: 'blur(8px)',
                       color: "white",
+                      borderRadius: 2,
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
                       "& .MuiMenuItem-root": {
+                        px: 2,
+                        py: 1.5,
                         color: "white",
                         "&:hover": {
                           bgcolor: "rgba(255, 255, 255, 0.1)",
@@ -229,13 +283,28 @@ const Header = () => {
                     },
                   }}
                 >
-                  <MenuItem onClick={() => {
-                    navigate(isAdminLoggedIn ? "/admin-profile" : "/user-profile");
-                    handleProfileClose();
-                  }}>
+                  <MenuItem 
+                    onClick={() => {
+                      navigate(isAdminLoggedIn ? "/admin-profile" : "/profile");
+                      handleProfileClose();
+                    }}
+                  >
+                    <AccountCircleIcon sx={{ mr: 1.5, fontSize: 20 }} />
                     Profile
                   </MenuItem>
+                  {isUserLoggedIn && (
+                    <MenuItem 
+                      onClick={() => {
+                        navigate("/create-tournament");
+                        handleProfileClose();
+                      }}
+                    >
+                      <SportsSoccerIcon sx={{ mr: 1.5, fontSize: 20 }} />
+                      Create Tournament
+                    </MenuItem>
+                  )}
                   <MenuItem onClick={logout}>
+                    <Box sx={{ mr: 1.5, fontSize: 20, display: 'flex', alignItems: 'center' }}>🚪</Box>
                     Logout
                   </MenuItem>
                 </Menu>
@@ -245,64 +314,135 @@ const Header = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Hero Content with Search Bar */}
+      {/* Hero Content */}
       <Box
         sx={{
-          position: "relative",
-          zIndex: 2,
-          color: "white",
-          textAlign: "center",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          paddingTop: "0"
+          textAlign: "center",
+          color: "white",
+          position: "relative",
+          zIndex: 2,
+          px: { xs: 2, sm: 3, md: 4 },
+          mt: { xs: -4, sm: 0 }
         }}
       >
-        <h1 style={{ fontSize: "2.5rem", marginBottom: "1.5rem" }}>Welcome to Futsal Booking</h1>
-        <p style={{ fontSize: "1.2rem", marginBottom: "2rem" }}>Find and book your favorite futsal courts easily.</p>
-        
+        <Typography 
+          variant="h2" 
+          sx={{ 
+            fontWeight: 800,
+            mb: { xs: 3, sm: 4 },
+            fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
+            textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
+            animation: "fadeInDown 0.8s ease-out",
+            px: { xs: 2, sm: 4 }
+          }}
+        >
+          Find Your Perfect Court
+        </Typography>
+
         {/* Search Bar */}
         <Box 
           sx={{ 
-            width: "50%",
-            maxWidth: "700px",
-            backgroundColor: 'rgba(255, 255, 255, 0.15)',
-            borderRadius: '12px',
-            padding: '15px',
-            backdropFilter: 'blur(8px)'
+            width: '100%', 
+            maxWidth: '800px',
+            position: 'relative',
+            zIndex: 3,
+            px: { xs: 2, sm: 4 },
+            animation: "fadeInUp 0.8s ease-out",
+            '& .MuiAutocomplete-root': {
+              width: '100%'
+            },
+            '@keyframes fadeInUp': {
+              from: {
+                opacity: 0,
+                transform: 'translateY(20px)'
+              },
+              to: {
+                opacity: 1,
+                transform: 'translateY(0)'
+              }
+            },
+            '@keyframes fadeInDown': {
+              from: {
+                opacity: 0,
+                transform: 'translateY(-20px)'
+              },
+              to: {
+                opacity: 1,
+                transform: 'translateY(0)'
+              }
+            }
           }}
         >
           <Autocomplete
-            onChange={handleChange}
             freeSolo
             options={futsalCourts.map((option) => option.title)}
+            onChange={handleChange}
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder="Search Futsal Courts"
+                placeholder="Search for futsal courts..."
                 variant="outlined"
                 sx={{
-                  width: "100%",
-                  "& .MuiOutlinedInput-root": {
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
-                    "& fieldset": {
-                      borderColor: "transparent"
+                  '& .MuiOutlinedInput-root': {
+                    bgcolor: 'rgba(255, 255, 255, 0.98)',
+                    borderRadius: 3,
+                    height: { xs: '52px', sm: '60px' },
+                    boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
+                    transition: 'all 0.3s ease',
+                    '&:hover, &.Mui-focused': {
+                      bgcolor: 'white',
+                      boxShadow: '0 10px 24px rgba(0,0,0,0.2)',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#ff5722'
+                      }
                     },
-                    "&:hover fieldset": {
-                      borderColor: "transparent"
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "transparent"
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: '2px solid rgba(255, 87, 34, 0.3)'
                     }
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: 'text.secondary'
+                  },
+                  '& input::placeholder': {
+                    color: 'text.secondary',
+                    opacity: 0.8,
+                    fontSize: { xs: '0.9rem', sm: '1rem' }
                   }
+                }}
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: (
+                    <Box sx={{ pl: 1.5, color: '#ff5722', display: 'flex', alignItems: 'center' }}>
+                      <SportsSoccerIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                    </Box>
+                  )
                 }}
               />
             )}
           />
         </Box>
+
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            mt: 3,
+            fontWeight: 500,
+            opacity: 0.9,
+            fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1.25rem' },
+            textShadow: "1px 1px 2px rgba(0,0,0,0.3)",
+            animation: "fadeInUp 0.8s ease-out",
+            animationDelay: "0.2s",
+            animationFillMode: "both",
+            px: { xs: 2, sm: 4 }
+          }}
+        >
+          Book and play at the best futsal courts near you
+        </Typography>
       </Box>
     </Box>
   );
