@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getAllFutsalCourts } from "../../api-helpers/api-helpers";
 import FutsalCourtItem from "./FutsalCourtItem";
+import Footer from "../../components/Footer";
 
 const FutsalCourts = () => {
   const [futsalCourts, setFutsalCourts] = useState([]);
@@ -17,7 +18,7 @@ const FutsalCourts = () => {
       margin={"auto"}
       marginTop={4}
       sx={{
-        background: "linear-gradient(135deg,rgb(247, 187, 113), #001a00)", // Dark green gradient
+        background: "#FFFFFF",
         minHeight: "100vh",
         padding: 5,
       }}
@@ -27,12 +28,12 @@ const FutsalCourts = () => {
         variant="h4"
         padding={2}
         width="40%"
-        bgcolor={"#FF4500"} // Sports Green
+        bgcolor={"#FF6600"}
         color="white"
         textAlign={"center"}
         fontWeight="bold"
         borderRadius={3}
-        boxShadow={"0px 8px 15px rgba(0,0,0,0.3)"}
+        boxShadow={"0px 8px 15px rgba(255,102,0,0.4)"}
       >
         ⚽ All Futsal Courts ⚽
       </Typography>
@@ -50,14 +51,27 @@ const FutsalCourts = () => {
             <FutsalCourtItem
               key={futsalCourt._id}
               id={futsalCourt._id}
+              title={futsalCourt.title}
+              image={futsalCourt.image}
+              price={futsalCourt.price}
+              rating={futsalCourt.rating}
+              location={futsalCourt.location}
+              isNew={futsalCourt.isNew}
+              facilities={futsalCourt.facilities}
               websiteUrl={futsalCourt.websiteUrl}
               openingDate={futsalCourt.openingDate}
-              title={futsalCourt.title}
-              locations={futsalCourt.locations}
               description={futsalCourt.description}
+              sx={{
+                border: "2px solid #FF6600",
+                borderRadius: "10px",
+                padding: "10px",
+                background: "#FFF",
+                boxShadow: "0px 5px 10px rgba(255,102,0,0.3)",
+              }}
             />
           ))}
       </Box>
+      <Footer />
     </Box>
   );
 };

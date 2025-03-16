@@ -9,7 +9,6 @@ import {
   Menu,
   MenuItem,
   Button,
-  Divider,
 } from "@mui/material";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -98,14 +97,14 @@ const Header = () => {
                 "&:hover": {
                   bgcolor: "rgba(255, 255, 255, 0.1)"
                 }
-              }} 
+              }}
               onClick={handleMenuOpen}
             >
               Menu
             </Button>
-            <Menu 
-              anchorEl={menuAnchorEl} 
-              open={Boolean(menuAnchorEl)} 
+            <Menu
+              anchorEl={menuAnchorEl}
+              open={Boolean(menuAnchorEl)}
               onClose={handleMenuClose}
               PaperProps={{
                 sx: {
@@ -121,17 +120,17 @@ const Header = () => {
                 },
               }}
             >
-              <MenuItem 
-                component={Link} 
-                to="/futsalCourts" 
+              <MenuItem
+                component={Link}
+                to="/futsalCourts"
                 onClick={handleMenuClose}
               >
                 Futsal Courts
               </MenuItem>
               {isAdminLoggedIn && (
-                <MenuItem 
-                  component={Link} 
-                  to="/add" 
+                <MenuItem
+                  component={Link}
+                  to="/add"
                   onClick={handleMenuClose}
                 >
                   Add Futsal Court
@@ -146,8 +145,8 @@ const Header = () => {
               <>
                 <Button
                   onClick={handleAuthOpen}
-                  sx={{ 
-                    color: "white", 
+                  sx={{
+                    color: "white",
                     fontWeight: "bold",
                     "&:hover": {
                       bgcolor: "rgba(255, 255, 255, 0.1)"
@@ -175,7 +174,7 @@ const Header = () => {
                     },
                   }}
                 >
-                  <MenuItem 
+                  <MenuItem
                     onClick={() => {
                       navigate("/auth");
                       handleAuthClose();
@@ -184,7 +183,7 @@ const Header = () => {
                     <AccountCircleIcon sx={{ mr: 1 }} />
                     User Login
                   </MenuItem>
-                  <MenuItem 
+                  <MenuItem
                     onClick={() => {
                       navigate("/admin/login");
                       handleAuthClose();
@@ -197,9 +196,9 @@ const Header = () => {
               </>
             ) : (
               <>
-                <IconButton 
-                  onClick={handleProfileOpen} 
-                  sx={{ 
+                <IconButton
+                  onClick={handleProfileOpen}
+                  sx={{
                     color: "white",
                     "&:hover": {
                       bgcolor: "rgba(255, 255, 255, 0.1)"
@@ -212,9 +211,9 @@ const Header = () => {
                     <AccountCircleIcon fontSize="large" />
                   )}
                 </IconButton>
-                <Menu 
-                  anchorEl={profileAnchorEl} 
-                  open={Boolean(profileAnchorEl)} 
+                <Menu
+                  anchorEl={profileAnchorEl}
+                  open={Boolean(profileAnchorEl)}
                   onClose={handleProfileClose}
                   PaperProps={{
                     sx: {

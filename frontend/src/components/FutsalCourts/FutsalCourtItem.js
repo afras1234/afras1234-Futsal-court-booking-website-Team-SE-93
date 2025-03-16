@@ -1,76 +1,107 @@
+import React from "react";
 import {
   Button,
   Card,
   CardActions,
   CardContent,
+  CardMedia,
   Typography,
+  Box,
+  IconButton,
+  Rating,
 } from "@mui/material";
-import React from "react";
 import { Link } from "react-router-dom";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import WifiIcon from "@mui/icons-material/Wifi";
+import LocalParkingIcon from "@mui/icons-material/LocalParking";
+import ShowerIcon from "@mui/icons-material/Shower";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 
-const FutsalCourtItem = ({ title, openingDate, websiteUrl, id }) => {
+const FutsalCourtItem = ({ id, title, image, price, rating, location, isNew, facilities = [], openingDate }) => {
+  const facilityIcons = {
+    Wifi: <WifiIcon fontSize="small" key="wifi" />,
+    Parking: <LocalParkingIcon fontSize="small" key="parking" />,
+    Showers: <ShowerIcon fontSize="small" key="showers" />,
+    Cafe: <RestaurantIcon fontSize="small" key="cafe" />,
+  };
+
   return (
     <Card
       sx={{
-        margin: "10px",
-        width: 250, // Matches parent Box width
-        height: 200, // Matches parent Box height
-        borderRadius: "12px",
-        background: "rgba(255, 255, 255, 0.1)", // Semi-transparent effect
-        backdropFilter: "blur(5px)",
-        boxShadow: "0px 4px 12px rgba(255, 193, 7, 0.3)", // Orange glow
-        transition: "transform 0.3s ease-in-out, box-shadow 0.3s",
-        ":hover": {
-          transform: "scale(1.05)",
-          boxShadow: "0px 6px 18px rgba(255, 193, 7, 0.6)",
-        },
+        height: "100%",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between", // Ensures spacing between elements
+        position: "relative",
+        transition: "transform 0.2s ease-in-out",
+        ":hover": {
+          boxShadow: 6,
+          transform: "translateY(-4px)",
+        },
       }}
     >
-      {/* Image */}
-      <img
-        height="50%"
-        width="100%"
-        src={websiteUrl}
+      <CardMedia
+        component="img"
+        height="200"
+        image={image}
         alt={title}
-        style={{
-          objectFit: "cover",
-          filter: "brightness(0.9)",
-          borderTopLeftRadius: "12px",
-          borderTopRightRadius: "12px",
-        }}
+        sx={{ objectFit: "cover", objectPosition: "center" }}
       />
 
-      {/* Content */}
-      <CardContent sx={{ padding: "10px", flexGrow: 1 }}>
-        <Typography
-          gutterBottom
-          variant="h6"
+      {isNew && (
+        <Box
           sx={{
-            fontWeight: "bold",
-            color: "#ffffff",
-            textAlign: "center",
-            fontSize: "14px", // Maintains consistency
+            position: "absolute",
+            top: 10,
+            right: 10,
+            bgcolor: "#ff5722",
+            color: "white",
+            px: 1,
+            py: 0.5,
+            borderRadius: 1,
+            fontSize: "0.75rem",
           }}
         >
-          {title}
+          New
+        </Box>
+      )}
+
+      <CardContent sx={{ flex: 1 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+          <Typography variant="h6" component="h3">
+            {title}
+          </Typography>
+          <Typography variant="h6" sx={{ color: "#ff5722" }}>
+            {price}
+          </Typography>
+        </Box>
+
+        <Rating value={rating} precision={0.5} size="small" readOnly sx={{ mb: 1 }} />
+
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {location}
         </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            color: "#ffcc80", // Orange-yellow for contrast
-            textAlign: "center",
-            fontSize: "12px",
-          }}
-        >
-          {new Date(openingDate).toDateString()}
-        </Typography>
+
+        <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
+          {facilities.map((facility) => facilityIcons[facility])}
+        </Box>
+
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="caption" color="text.secondary">
+            {openingDate}
+          </Typography>
+          <Box>
+            <IconButton size="small" aria-label="add to favorites">
+              <FavoriteIcon fontSize="small" />
+            </IconButton>
+            <IconButton size="small" aria-label="bookmark">
+              <BookmarkBorderIcon fontSize="small" />
+            </IconButton>
+          </Box>
+        </Box>
       </CardContent>
 
-      {/* Button */}
-      <CardActions sx={{ justifyContent: "center", paddingBottom: "8px" }}>
+      <CardActions sx={{ justifyContent: "center", pb: 1 }}>
         <Button
           variant="contained"
           component={Link}
@@ -80,7 +111,7 @@ const FutsalCourtItem = ({ title, openingDate, websiteUrl, id }) => {
             fontWeight: "bold",
             letterSpacing: "1px",
             fontSize: "12px",
-            padding: "6px 12px",
+            px: 2,
             ":hover": {
               bgcolor: "#FF8C00",
             },

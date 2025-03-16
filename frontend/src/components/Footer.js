@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Container, Grid, Typography, IconButton, Link, Divider } from '@mui/material';
+import { Box, Container, Grid, Typography, IconButton, Link as MuiLink, Divider } from '@mui/material';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -33,16 +34,16 @@ const Footer = () => {
               Your premier destination for futsal court bookings. Experience seamless booking and world-class facilities at ArenaX - where passion meets the pitch.
             </Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <IconButton size="small" sx={{ color: '#ff5722' }}>
+              <IconButton size="small" sx={{ color: '#ff5722' }} component="a" href="https://www.facebook.com/" target="_blank">
                 <FacebookIcon />
               </IconButton>
-              <IconButton size="small" sx={{ color: '#ff5722' }}>
+              <IconButton size="small" sx={{ color: '#ff5722' }} component="a" href="https://twitter.com/" target="_blank">
                 <TwitterIcon />
               </IconButton>
-              <IconButton size="small" sx={{ color: '#ff5722' }}>
+              <IconButton size="small" sx={{ color: '#ff5722' }} component="a" href="https://www.instagram.com/" target="_blank">
                 <InstagramIcon />
               </IconButton>
-              <IconButton size="small" sx={{ color: '#ff5722' }}>
+              <IconButton size="small" sx={{ color: '#ff5722' }} component="a" href="https://www.linkedin.com/" target="_blank">
                 <LinkedInIcon />
               </IconButton>
             </Box>
@@ -54,19 +55,21 @@ const Footer = () => {
               Quick Links
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {['Home', 'About Us', 'Courts', 'Tournaments', 'Contact'].map((text) => (
-                <Link
-                  key={text}
-                  href="#"
-                  underline="none"
-                  sx={{
-                    color: '#999',
-                    '&:hover': { color: '#ff5722' }
-                  }}
-                >
-                  {text}
-                </Link>
-              ))}
+              <Link to="/" style={{ textDecoration: 'none', color: '#999' }}>
+                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>Home</MuiLink>
+              </Link>
+              <Link to="/about" style={{ textDecoration: 'none', color: '#999' }}>
+                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>About Us</MuiLink>
+              </Link>
+              <Link to="/futsalCourts" style={{ textDecoration: 'none', color: '#999' }}>
+                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>Courts</MuiLink>
+              </Link>
+              <Link to="/tournaments" style={{ textDecoration: 'none', color: '#999' }}>
+                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>Tournaments</MuiLink>
+              </Link>
+              <Link to="/contact" style={{ textDecoration: 'none', color: '#999' }}>
+                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>Contact</MuiLink>
+              </Link>
             </Box>
           </Grid>
 
@@ -83,7 +86,7 @@ const Footer = () => {
                 'Equipment Rental',
                 'Training Sessions'
               ].map((text) => (
-                <Link
+                <MuiLink
                   key={text}
                   href="#"
                   underline="none"
@@ -93,7 +96,7 @@ const Footer = () => {
                   }}
                 >
                   {text}
-                </Link>
+                </MuiLink>
               ))}
             </Box>
           </Grid>

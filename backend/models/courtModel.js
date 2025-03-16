@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 
 const courtSchema = new mongoose.Schema({
+    id: {
+        type: mongoose.Schema.Types.ObjectId,
+        auto: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true
@@ -20,6 +28,18 @@ const courtSchema = new mongoose.Schema({
     rating: {
         type: Number,
         default: 0
+    },
+    isNew: {
+        type: Boolean,
+        default: false
+    },
+    facilities: {
+        type: [String],
+        default: []
+    },
+    openingDate: {
+        type: Date,
+        default: Date.now
     },
     reviews: [{
         user: {

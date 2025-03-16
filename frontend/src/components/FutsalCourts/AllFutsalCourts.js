@@ -2,7 +2,8 @@ import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { getAllFutsalCourts } from "../../api-helpers/api-helpers";
-import CardLayout from "../HomePage/CardLayout"; // Check if this is the correct name
+import FutsalCourtItem from "../HomePage/FutsalCourtItem";
+import Footer from "../../components/Footer";
 
 const AllFutsalCourts = () => {
   const [futsalCourts, setFutsalCourts] = useState([]);
@@ -63,16 +64,21 @@ const AllFutsalCourts = () => {
                 },
               }}
             >
-              <CardLayout
+              <FutsalCourtItem
                 id={futsalCourt._id}
                 title={futsalCourt.title}
+                image={futsalCourt.image}
+                price={futsalCourt.price}
+                rating={futsalCourt.rating}
+                location={futsalCourt.location}
+                isNew={futsalCourt.isNew}
+                facilities={futsalCourt.facilities || []}
                 openingDate={futsalCourt.openingDate}
-                websiteUrl={futsalCourt.websiteUrl}
-                description={futsalCourt.description}
               />
             </Box>
           ))}
       </Box>
+      <Footer />
     </Box>
   );
 };

@@ -194,29 +194,29 @@ export const getUserDetails = async () => {
   }
 };
 
+// Add New Futsal Court
 export const addFutsalCourt = async (data) => {
   try {
-    const res = await API.post(
-      "/futsalCourt",
-      {
-        title: data.title,
-        description: data.description,
-        openingDate: data.openingDate,
-        websiteUrl: data.websiteUrl,
-        featured: data.featured,
-        locations: data.locations,
-        admin: localStorage.getItem("adminId"),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const formattedData = {
+      id: data.id || `court-${Date.now()}`,
+      title: data.title?.trim() || "Untitled Court",
+      image: data.image || "https://example.com/default-futsal-image.jpg",
+      price: Number(data.price) || 0,
+      rating: Number(data.rating) || 0,
+      location: data.location?.trim() || "Unknown Location",
+      isNew: Boolean(data.isNew),
+      facilities: Array.isArray(data.facilities) ? data.facilities.map(f => f.trim()) : [],
+      openingDate: data.openingDate || new Date().toISOString().split("T")[0],
+      description: data.description?.trim() || "No description available.",
+      websiteUrl: data.websiteUrl || "",
+      featured: Boolean(data.featured),
+      admin: localStorage.getItem("adminId"),
+    };
+    console.log("Submitting Futsal Court:", formattedData);
+    const res = await API.post("/futsalCourt", formattedData);
     return res.data;
-  } catch (err) {
-    console.error("Error adding futsal court:", err);
-    throw err;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -246,6 +246,61 @@ export const updateUserProfile = async (formData) => {
     return res.data;
   } catch (err) {
     console.error("Error updating profile:", err);
+    throw err;
+  }
+};
+
+// Tournament related API functions
+export const createTournament = async (tournamentData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await API.post("/tournaments", tournamentData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.status !== 201) {
+      throw new Error(res.data?.message || "Failed to create tournament");
+    }
+    return res.data;
+  } catch (err) {
+    console.error("Error creating tournament:", err);
+    throw err;
+  }
+};
+
+export const updateTournament = async (id, tournamentData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await API.put(`/tournaments/${id}`, tournamentData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.status !== 200) {
+      throw new Error(res.data?.message || "Failed to update tournament");
+    }
+    return res.data;
+  } catch (err) {
+    console.error("Error updating tournament:", err);
+    throw err;
+  }
+};
+
+export const getUserTournaments = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await API.get("/tournaments/user", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.status !== 200) {
+      throw new Error(res.data?.message || "Failed to fetch tournaments");
+    }
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching user tournaments:", err);
     throw err;
   }
 };

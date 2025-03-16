@@ -23,9 +23,9 @@ const AdminProfile = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, rgb(55, 25, 4) 30%, rgb(55, 22, 6) 70%)",
+        background: "linear-gradient(135deg, #ffffff 30%, #ff6600 70%)",
         fontFamily: "'Bebas Neue', sans-serif",
-        color: "white",
+        color: "#ff6600",
       }}
     >
       <Fragment>
@@ -39,13 +39,13 @@ const AdminProfile = () => {
               width: "40%",
               padding: 4,
               borderRadius: 3,
-              backgroundColor: "rgb(20, 20, 20)",
-              boxShadow: "0px 4px 20px rgba(239, 122, 43, 0.7)",
+              backgroundColor: "#ffffff",
+              boxShadow: "0px 4px 20px rgba(255, 102, 0, 0.7)",
               textAlign: "center",
               transition: "0.3s ease-in-out",
               "&:hover": {
                 transform: "scale(1.05)",
-                boxShadow: "0px 6px 25px rgba(255, 102, 0, 0.55)",
+                boxShadow: "0px 6px 25px rgba(255, 102, 0, 0.85)",
               },
             }}
           >
@@ -60,7 +60,7 @@ const AdminProfile = () => {
             <Typography
               mt={2}
               padding={1}
-              border="2px solidrgb(250, 118, 31)"
+              border="2px solid #ff6600"
               borderRadius={2}
               sx={{
                 fontSize: "1.4rem",
@@ -68,7 +68,11 @@ const AdminProfile = () => {
                 letterSpacing: "1px",
                 color: "#ff6600",
                 transition: "0.3s",
-                "&:hover": { backgroundColor: "#ff3300", padding: "12px", color: "black" },
+                "&:hover": {
+                  backgroundColor: "#ff6600",
+                  padding: "12px",
+                  color: "white",
+                },
               }}
             >
               📧 Email: {admin.email}
@@ -83,8 +87,8 @@ const AdminProfile = () => {
               marginTop: 4,
               padding: 3,
               borderRadius: 2,
-              backgroundColor: "rgb(20, 20, 20)",
-              boxShadow: "0px 4px 20px rgba(240, 114, 30, 0.7)",
+              backgroundColor: "#ffffff",
+              boxShadow: "0px 4px 20px rgba(255, 102, 0, 0.7)",
               textAlign: "center",
             }}
           >
@@ -107,7 +111,7 @@ const AdminProfile = () => {
                       margin: "15px 0",
                       borderRadius: "15px",
                       padding: 3,
-                      boxShadow: "0px 2px 12px rgb(245, 116, 31)",
+                      boxShadow: "0px 2px 12px rgba(255, 102, 0, 0.7)",
                       transition: "0.3s",
                       "&:hover": {
                         transform: "scale(1.02)",
@@ -131,7 +135,6 @@ const AdminProfile = () => {
         )}
       </Fragment>
 
-      {/* Pulsing animation inside JSX */}
       <style>
         {`
           @keyframes pulse {
