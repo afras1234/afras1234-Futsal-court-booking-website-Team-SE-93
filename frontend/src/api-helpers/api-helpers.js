@@ -303,8 +303,4 @@ export const getUserTournaments = async () => {
     console.error("Error fetching user tournaments:", err);
     throw err;
   }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 8eda37c6db0fc528a3f7ab46ea7cc396e6b40768

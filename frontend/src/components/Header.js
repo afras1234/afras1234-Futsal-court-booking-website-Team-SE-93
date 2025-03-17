@@ -9,10 +9,7 @@ import {
   Menu,
   MenuItem,
   Button,
-<<<<<<< HEAD
-=======
   Typography
->>>>>>> 8eda37c6db0fc528a3f7ab46ea7cc396e6b40768
 } from "@mui/material";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -237,15 +234,9 @@ const Header = () => {
               </>
             ) : (
               <>
-<<<<<<< HEAD
-                <IconButton
-                  onClick={handleProfileOpen}
-                  sx={{
-=======
                 <IconButton 
                   onClick={handleProfileOpen}
                   sx={{ 
->>>>>>> 8eda37c6db0fc528a3f7ab46ea7cc396e6b40768
                     color: "white",
                     p: { xs: 1, sm: 1.5 },
                     bgcolor: 'rgba(255, 255, 255, 0.1)',
