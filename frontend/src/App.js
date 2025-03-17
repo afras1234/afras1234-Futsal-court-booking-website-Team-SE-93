@@ -13,13 +13,20 @@ import AdminProfile from "./profile/AdminProfile";
 import Profile from "./components/Profile";
 import TournamentForm from "./components/TournamentForm";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { adminActions, userActions } from "./store";
+import { Button } from "@mui/material";
+import Chat from "./components/Chat";
 
 function App() {
   const dispatch = useDispatch();
   const isAdminLoggedIn = useSelector((state) => state.admin.isLoggedIn);
   const isUserLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const toggleChat = (state) => {
+    setIsChatOpen(state !== undefined ? state : !isChatOpen);
+  };
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -35,7 +42,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="App">
       <Header />
       <Routes>
         {/* Public routes */}
@@ -55,6 +62,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/booking/:id" element={<Booking />} />
             <Route path="/create-tournament" element={<TournamentForm />} />
+            <Route path="/chat" element={<Chat />} />
           </>
         )}
 
@@ -69,6 +77,9 @@ function App() {
         {/* Catch-all route */}
         <Route path="*" element={<HomePage />} />
       </Routes>
+
+      {/* Add the Chat component as a popup that's always available */}
+      {isUserLoggedIn && <Chat isOpen={isChatOpen} toggleChat={toggleChat} />}
     </div>
   );
 }
