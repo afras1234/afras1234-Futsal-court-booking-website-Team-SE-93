@@ -17,6 +17,13 @@ import {
   CardActions,
   IconButton
 } from '@mui/material';
+import { Link } from 'react-router-dom';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import WifiIcon from '@mui/icons-material/Wifi';
+import LocalParkingIcon from '@mui/icons-material/LocalParking';
+import ShowerIcon from '@mui/icons-material/Shower';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
 import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -24,6 +31,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PeopleIcon from '@mui/icons-material/People';
 import Footer from './Footer';
+import { getAllFutsalCourts } from '../api-helpers/api-helpers';
 import TournamentRegistrationForm from './TournamentRegistrationForm';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Snackbar from '@mui/material/Snackbar';
@@ -207,12 +215,21 @@ const TournamentCard = ({ tournament, onRegister, isAuthenticated }) => {
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [futsalCourts, setFutsalCourts] = useState([]);
   const [tournaments, setTournaments] = useState([]);
   const [visibleTournaments, setVisibleTournaments] = useState(3);
   const [selectedTournament, setSelectedTournament] = useState(null);
   const [openRegistrationForm, setOpenRegistrationForm] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    getAllFutsalCourts()
+      .then((data) => {
+        setFutsalCourts(data.futsalCourts || []);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -283,8 +300,103 @@ const HomePage = () => {
   };
 
   return (
-    <Box>
-     
+    <Box sx={{ mt: '20vh' }}>
+      {/* Futsal Courts Section */}
+      <Container maxWidth="lg" sx={{ py: 1 }}>
+        <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 'bold' }}>
+          Featured Courts Near You.
+        </Typography>
+
+        <Grid container spacing={3}>
+          {futsalCourts.map((court) => (
+            <Grid item xs={12} sm={6} md={4} key={court.id}>
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  '&:hover': {
+                    boxShadow: 6,
+                    transform: 'translateY(-4px)',
+                    transition: 'transform 0.2s ease-in-out'
+                  }
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={court.image}
+                  alt={court.name}
+                  sx={{
+                    objectFit: 'cover',
+                    objectPosition: 'center'
+                  }}
+                />
+                {court.isNew && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 10,
+                      bgcolor: '#ff5722',
+                      color: 'white',
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: 1,
+                      fontSize: '0.75rem'
+                    }}
+                  >
+                    New
+                  </Box>
+                )}
+                <CardContent>
+                <Typography variant="h6">{court.name}</Typography>
+                <Rating value={court.rating} precision={0.5} size="small" readOnly />
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {court.location}
+                  </Typography>
+
+                  <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+                    {court.facilities.includes('Wifi') && <WifiIcon fontSize="small" />}
+                    {court.facilities.includes('Parking') && <LocalParkingIcon fontSize="small" />}
+                    {court.facilities.includes('Showers') && <ShowerIcon fontSize="small" />}
+                    {court.facilities.includes('Cafe') && <RestaurantIcon fontSize="small" />}
+                  </Box>
+
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <IconButton size="small">
+                      <FavoriteIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small">
+                      <BookmarkBorderIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                  </CardContent>
+                  </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* View More Button */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 6 }}>
+          <Button
+            variant="outlined"
+            component={Link}
+            to="/courts"
+            sx={{
+              borderColor: '#ff5722',
+              color: '#ff5722',
+              '&:hover': {
+                borderColor: '#f4511e',
+                bgcolor: 'rgba(244, 81, 30, 0.1)'
+              }
+            }}
+          >
+            View More Courts
+          </Button>
+        </Box>
+      </Container>
 
       {/* Features Section */}
       <Container maxWidth="lg" sx={{ py: 10 }}>
@@ -443,10 +555,9 @@ const HomePage = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-
       <Footer />
     </Box>
   );
-};
+}
 
 export default HomePage;
