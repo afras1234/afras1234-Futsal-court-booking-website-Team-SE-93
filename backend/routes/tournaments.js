@@ -49,9 +49,26 @@ router.get('/', async (req, res) => {
 // Get all tournaments for a user
 router.get('/user', verifyToken, async (req, res) => {
   try {
-    // Find tournaments where the user is the creator
-    const tournaments = await Tournament.find({ creator: req.user.userId });
-    res.status(200).json(tournaments);
+    // Find tournaments where the user is the creator and populate registrations
+    const tournaments = await Tournament.find({ creator: req.user.userId })
+      .populate('registrations.userId', 'name email')
+      .exec();
+    
+    const processedTournaments = tournaments.map(tournament => ({
+      ...tournament.toObject(),
+      registrations: tournament.registrations.map(reg => ({
+        id: reg._id,
+        teamName: reg.teamName,
+        captainName: reg.captainName,
+        captainPhone: reg.captainPhone,
+        playerCount: reg.playerCount,
+        paymentReference: reg.paymentReference,
+        registrationDate: reg.registrationDate,
+        userId: reg.userId
+      }))
+    }));
+    
+    res.status(200).json(processedTournaments);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

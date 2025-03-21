@@ -66,20 +66,34 @@ export const deleteBooking = async (req, res, next) => {
   const id = req.params.id;
   let booking;
   try {
-    booking = await Bookings.findByIdAndRemove(id).populate("user futsalCourt");
-    console.log(booking);
+    // First find the booking and populate user details
+    booking = await Bookings.findById(id).populate("user futsalCourt");
+    
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Check if the logged-in user owns this booking
+    if (booking.user._id.toString() !== req.user.userId) {
+      return res.status(403).json({ message: "Unauthorized to delete this booking" });
+    }
+
+    // Proceed with deletion
     const session = await mongoose.startSession();
     session.startTransaction();
+    
+    await Bookings.findByIdAndRemove(id);
     await booking.user.bookings.pull(booking);
     await booking.futsalCourt.bookings.pull(booking);
     await booking.futsalCourt.save({ session });
     await booking.user.save({ session });
-    session.commitTransaction();
+    
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(200).json({ message: "Successfully Deleted" });
   } catch (err) {
-    return console.log(err);
+    console.error("Error deleting booking:", err);
+    return res.status(500).json({ message: "Error deleting booking" });
   }
-  if (!booking) {
-    return res.status(500).json({ message: "Unable to Delete" });
-  }
-  return res.status(200).json({ message: "Successfully Deleted" });
 };

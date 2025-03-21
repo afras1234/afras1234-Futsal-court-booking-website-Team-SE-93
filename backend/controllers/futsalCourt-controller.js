@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+
 import mongoose from "mongoose";
 import Admin from "../models/Admin.js";
 import FutsalCourt from "../models/FutsalCourt.js";
@@ -8,27 +8,13 @@ import FutsalCourt from "../models/FutsalCourt.js";
  */
 export const addFutsalCourt = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized: Token Not Found" });
-    }
-
-    let adminId;
-    try {
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
-      adminId = decoded.id;
-    } catch (err) {
-      return res.status(403).json({ message: "Forbidden: Invalid Token" });
-    }
-
     const {
       title,
       description,
       openingDate,
       websiteUrl,
       featured,
-      location, // Changed from locations to location (assuming it's a single string)
+      location,
       image,
       price,
       rating,
@@ -59,7 +45,7 @@ export const addFutsalCourt = async (req, res, next) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
-    const adminUser = await Admin.findById(adminId).session(session);
+    const adminUser = await Admin.findById(req.adminId).session(session);
     if (!adminUser) {
       await session.abortTransaction();
       session.endSession();
@@ -72,8 +58,8 @@ export const addFutsalCourt = async (req, res, next) => {
       openingDate: formattedOpeningDate,
       websiteUrl: formattedWebsiteUrl,
       featured,
-      location, // Single location instead of array
-      admin: adminId,
+      location,
+      admin: req.adminId,
       image,
       price: Number(price),
       rating: Number(rating),

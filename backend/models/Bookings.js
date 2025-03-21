@@ -19,6 +19,11 @@ const bookingSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  payment: {},
+  buyer: {
+    type: mongoose.ObjectId,
+    ref: "users",
+  },
 });
 
 export default mongoose.model("Booking", bookingSchema);

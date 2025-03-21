@@ -6,6 +6,7 @@ import {
   TextField,
   Typography,
   Rating,
+  Chip,
 } from "@mui/material";
 import React, { useState } from "react";
 import { addFutsalCourt } from "../../api-helpers/api-helpers";
@@ -20,7 +21,6 @@ const labelProps = {
 
 const AddFutsalCourt = () => {
   const [inputs, setInputs] = useState({
-    id: "",
     title: "",
     image: "",
     price: "",
@@ -55,7 +55,7 @@ const AddFutsalCourt = () => {
   };
 
   const validateInputs = () => {
-    const requiredFields = ["id", "title", "image", "location", "openingDate", "description"];
+    const requiredFields = ["title", "image", "location", "openingDate", "description", "websiteUrl"];
     
     for (const field of requiredFields) {
       if (!inputs[field].trim()) {
@@ -74,6 +74,13 @@ const AddFutsalCourt = () => {
       return false;
     }
 
+    // Basic URL validation
+    const urlPattern = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/;
+    if (!urlPattern.test(inputs.websiteUrl)) {
+      alert("Please enter a valid website URL.");
+      return false;
+    }
+
     return true;
   };
 
@@ -83,16 +90,18 @@ const AddFutsalCourt = () => {
     if (!validateInputs()) return;
 
     const payload = {
-      ...inputs,
+      title: inputs.title.trim(),
+      image: inputs.image.trim(),
       price: parseFloat(inputs.price),
       rating: parseFloat(inputs.rating) || 0,
+      location: inputs.location.trim(),
       isNew: Boolean(inputs.isNew),
-      featured: Boolean(inputs.featured),
       facilities: Array.isArray(inputs.facilities) ? inputs.facilities : [],
       openingDate: new Date(inputs.openingDate).toISOString().split("T")[0],
+      description: inputs.description.trim(),
+      websiteUrl: inputs.websiteUrl.trim(),
+      featured: Boolean(inputs.featured)
     };
-
-    console.log("Submitting payload:", JSON.stringify(payload, null, 2));
 
     try {
       const response = await addFutsalCourt(payload);
@@ -100,7 +109,6 @@ const AddFutsalCourt = () => {
       alert("Futsal court added successfully!");
       // Reset form after successful submission
       setInputs({
-        id: "",
         title: "",
         image: "",
         price: "",
@@ -115,7 +123,7 @@ const AddFutsalCourt = () => {
       });
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
-      alert("Error adding futsal court. Check the console for details.");
+      alert(err.response?.data?.message || "Error adding futsal court. Please try again.");
     }
   };
 
@@ -156,7 +164,7 @@ const AddFutsalCourt = () => {
               Add New Futsal Court
             </Typography>
 
-            {["id", "title", "image", "price", "location", "websiteUrl"].map((field) => (
+            {["title", "image", "price", "location", "websiteUrl"].map((field) => (
               <Box key={field}>
                 <FormLabel sx={labelProps}>
                   {field.charAt(0).toUpperCase() + field.slice(1)}
@@ -169,6 +177,8 @@ const AddFutsalCourt = () => {
                   margin="normal"
                   fullWidth
                   required
+                  type={field === "price" ? "number" : "text"}
+                  inputProps={field === "price" ? { min: 0, step: "0.01" } : {}}
                 />
               </Box>
             ))}
@@ -216,22 +226,74 @@ const AddFutsalCourt = () => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
+                placeholder="Add facility and click Add"
               />
               <Button
                 onClick={addFacility}
-                sx={{ background: "#FF4500", color: "white", marginLeft: "10px" }}
+                sx={{ 
+                  background: "#FF4500", 
+                  color: "white", 
+                  marginLeft: "10px",
+                  '&:hover': {
+                    background: "#FF6347"
+                  }
+                }}
               >
                 Add
               </Button>
             </Box>
 
-            <FormLabel sx={labelProps}>Is New</FormLabel>
-            <Checkbox name="isNew" checked={inputs.isNew} onChange={handleChange} sx={{ color: "#FF4500" }} />
+            {inputs.facilities.length > 0 && (
+              <Box sx={{ mt: 1, mb: 2 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>Added Facilities:</Typography>
+                {inputs.facilities.map((fac, index) => (
+                  <Chip
+                    key={index}
+                    label={fac}
+                    onDelete={() => {
+                      setInputs(prev => ({
+                        ...prev,
+                        facilities: prev.facilities.filter((_, i) => i !== index)
+                      }))
+                    }}
+                    sx={{ m: 0.5 }}
+                  />
+                ))}
+              </Box>
+            )}
 
-            <FormLabel sx={labelProps}>Featured</FormLabel>
-            <Checkbox name="featured" checked={inputs.featured} onChange={handleChange} sx={{ color: "#FF4500" }} />
+            <Box sx={{ mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+              <FormLabel sx={labelProps}>Is New</FormLabel>
+              <Checkbox 
+                name="isNew" 
+                checked={inputs.isNew} 
+                onChange={handleChange} 
+                sx={{ color: "#FF4500" }} 
+              />
 
-            <Button type="submit" variant="contained" sx={{ mt: 3, width: "100%", backgroundColor: "#FF8C00", color: "white", "&:hover": { backgroundColor: "#e07b00" } }}>
+              <FormLabel sx={labelProps}>Featured</FormLabel>
+              <Checkbox 
+                name="featured" 
+                checked={inputs.featured} 
+                onChange={handleChange} 
+                sx={{ color: "#FF4500" }} 
+              />
+            </Box>
+
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                mt: 3,
+                background: "#FF4500",
+                color: "white",
+                padding: "12px",
+                '&:hover': {
+                  background: "#FF6347"
+                }
+              }}
+            >
               Add New Futsal Court
             </Button>
           </Box>

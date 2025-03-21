@@ -27,17 +27,13 @@ import {
   DialogActions
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import EventIcon from '@mui/icons-material/Event';
-import GroupsIcon from '@mui/icons-material/Groups';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
-import ReceiptIcon from '@mui/icons-material/Receipt';
 import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 import EmailIcon from '@mui/icons-material/Email';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
-import UserProfile from '../profile/UserProfile';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteTournament, getUserTournaments } from '../api-helpers/api-helpers';
 
 const Profile = () => {
   const [createdTournaments, setCreatedTournaments] = useState([]);
@@ -121,6 +117,22 @@ const Profile = () => {
     setSelectedTournament(null);
   };
 
+  const handleDeleteTournament = async (event, tournamentId) => {
+    event.stopPropagation(); // Prevent card click event
+    if (window.confirm('Are you sure you want to delete this tournament?')) {
+      try {
+        await deleteTournament(tournamentId);
+        // Refresh tournaments list using the API helper
+        const updatedTournaments = await getUserTournaments();
+        setCreatedTournaments(updatedTournaments);
+        alert('Tournament deleted successfully');
+      } catch (error) {
+        console.error('Error deleting tournament:', error);
+        alert(error.response?.data?.message || 'Failed to delete tournament');
+      }
+    }
+  };
+
   const TournamentCard = ({ tournament }) => (
     <Card 
       elevation={3}
@@ -162,6 +174,18 @@ const Profile = () => {
         >
           <SportsSoccerIcon sx={{ fontSize: 24, color: '#ff5722' }} />
         </IconButton>
+        <IconButton
+          onClick={(e) => handleDeleteTournament(e, tournament._id)}
+          sx={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            bgcolor: 'rgba(244, 67, 54, 0.1)',
+            '&:hover': { bgcolor: 'rgba(244, 67, 54, 0.2)' }
+          }}
+        >
+          <DeleteIcon sx={{ fontSize: 24, color: '#f44336' }} />
+        </IconButton>
         <Typography
           variant="h5"
           sx={{
@@ -179,7 +203,7 @@ const Profile = () => {
           sx={{
             position: 'absolute',
             top: 16,
-            right: 16,
+            right: 70,
             fontWeight: 600,
             letterSpacing: 0.5,
             bgcolor: tournament.status === 'upcoming' ? '#4caf50' : 

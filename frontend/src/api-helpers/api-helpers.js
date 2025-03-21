@@ -175,7 +175,16 @@ export const getUserBooking = async () => {
 
 export const deleteBooking = async (id) => {
   try {
-    const res = await API.delete(`/booking/${id}`);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    const res = await API.delete(`/booking/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return res.data;
   } catch (err) {
     console.error("Error deleting booking:", err);
@@ -197,8 +206,12 @@ export const getUserDetails = async () => {
 // Add New Futsal Court
 export const addFutsalCourt = async (data) => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
     const formattedData = {
-      id: data.id || `court-${Date.now()}`,
       title: data.title?.trim() || "Untitled Court",
       image: data.image || "https://example.com/default-futsal-image.jpg",
       price: Number(data.price) || 0,
@@ -209,13 +222,23 @@ export const addFutsalCourt = async (data) => {
       openingDate: data.openingDate || new Date().toISOString().split("T")[0],
       description: data.description?.trim() || "No description available.",
       websiteUrl: data.websiteUrl || "",
-      featured: Boolean(data.featured),
-      admin: localStorage.getItem("adminId"),
+      featured: Boolean(data.featured)
     };
-    console.log("Submitting Futsal Court:", formattedData);
-    const res = await API.post("/futsalCourt", formattedData);
+
+    const res = await API.post("/futsalCourt", formattedData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (res.status !== 201) {
+      throw new Error(res.data?.message || "Failed to create futsal court");
+    }
+
     return res.data;
   } catch (error) {
+    console.error("Error saving futsal court:", error);
     throw error;
   }
 };
@@ -301,6 +324,24 @@ export const getUserTournaments = async () => {
     return res.data;
   } catch (err) {
     console.error("Error fetching user tournaments:", err);
+    throw err;
+  }
+};
+
+export const deleteTournament = async (tournamentId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await API.delete(`/tournaments/${tournamentId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.status !== 200) {
+      throw new Error(res.data?.message || "Failed to delete tournament");
+    }
+    return res.data;
+  } catch (err) {
+    console.error("Error deleting tournament:", err);
     throw err;
   }
 };

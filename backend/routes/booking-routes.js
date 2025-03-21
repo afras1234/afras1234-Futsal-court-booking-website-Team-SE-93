@@ -1,5 +1,5 @@
 import express from "express";
-
+import { verifyToken } from "../middleware/auth.js";
 import {
   deleteBooking,
   getBookingById,
@@ -9,6 +9,7 @@ import {
 const bookingsRouter = express.Router();
 
 bookingsRouter.get("/:id", getBookingById);
-bookingsRouter.post("/", newBooking);
-bookingsRouter.delete("/:id", deleteBooking);
+bookingsRouter.post("/", verifyToken, newBooking);
+bookingsRouter.delete("/:id", verifyToken, deleteBooking);
+
 export default bookingsRouter;

@@ -10,13 +10,14 @@ import Auth from "./components/Auth/Auth";
 import Booking from "./components/Bookings/Booking";
 import AddFutsalCourt from "./components/FutsalCourts/AddFutsalCourt";
 import AdminProfile from "./profile/AdminProfile";
-import Profile from "./components/Profile";
+import User from "./components/Profiles/User";
 import TournamentForm from "./components/TournamentForm";
+import CartPage from "./components/Bookings/CartPage";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { adminActions, userActions } from "./store";
-import { Button } from "@mui/material";
 import Chat from "./components/Chat";
+import { CartProvider } from "./components/context/cart";
 
 function App() {
   const dispatch = useDispatch();
@@ -42,45 +43,48 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="App">
-      <Header />
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/futsalCourts" element={<FutsalCourts />} />
+    <CartProvider>
+      <div className="App">
+        <Header />
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/futsalCourts" element={<FutsalCourts />} />
 
-        {/* Auth routes - always accessible */}
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/admin/signup" element={<Admin />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:email" element={<ResetPassword />} />
+          {/* Auth routes - always accessible */}
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/admin/signup" element={<Admin />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:email" element={<ResetPassword />} />
 
-        {/* User Protected routes */}
-        {isUserLoggedIn && (
-          <>
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/booking/:id" element={<Booking />} />
-            <Route path="/create-tournament" element={<TournamentForm />} />
-            <Route path="/chat" element={<Chat />} />
-          </>
-        )}
+          {/* User Protected routes */}
+          {isUserLoggedIn && (
+            <>
+              <Route path="/user" element={<User />} />
+              <Route path="/booking/:id" element={<Booking />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/create-tournament" element={<TournamentForm />} />
+              <Route path="/chat" element={<Chat />} />
+            </>
+          )}
 
-        {/* Admin Protected routes */}
-        {isAdminLoggedIn && (
-          <>
-            <Route path="/admin-profile" element={<AdminProfile />} />
-            <Route path="/add" element={<AddFutsalCourt />} />
-          </>
-        )}
+          {/* Admin Protected routes */}
+          {isAdminLoggedIn && (
+            <>
+              <Route path="/admin-profile" element={<AdminProfile />} />
+              <Route path="/add" element={<AddFutsalCourt />} />
+            </>
+          )}
 
-        {/* Catch-all route */}
-        <Route path="*" element={<HomePage />} />
-      </Routes>
+          {/* Catch-all route */}
+          <Route path="*" element={<HomePage />} />
+        </Routes>
 
-      {/* Add the Chat component as a popup that's always available */}
-      {isUserLoggedIn && <Chat isOpen={isChatOpen} toggleChat={toggleChat} />}
-    </div>
+        {/* Add the Chat component as a popup that's always available */}
+        {isUserLoggedIn && <Chat isOpen={isChatOpen} toggleChat={toggleChat} />}
+      </div>
+    </CartProvider>
   );
 }
 

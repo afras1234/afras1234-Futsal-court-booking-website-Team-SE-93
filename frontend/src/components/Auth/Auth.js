@@ -30,7 +30,6 @@ const Auth = () => {
     if (token) {
       localStorage.setItem("token", token);
     }
-    
     // Navigate to home page without query parameters
     navigate("/", { replace: true });
   };

@@ -11,6 +11,7 @@ import futsalCourtRouter from "./routes/futsalCourt-routes.js";
 import bookingsRouter from "./routes/booking-routes.js";
 import tournamentRouter from "./routes/tournaments.js";
 import chatRoutes from "./routes/chat-routes.js";
+import paymentRoutes from "./routes/Payment-routes.js";
 import { saveMessage } from "./controllers/chat-controller.js";
 
 dotenv.config();
@@ -68,6 +69,7 @@ app.use("/futsalCourt", futsalCourtRouter);
 app.use("/booking", bookingsRouter);
 app.use("/tournaments", tournamentRouter);
 app.use("/chat", chatRoutes);
+app.use("/api/v1/payment", paymentRoutes);
 
 // Track connected users with their socket IDs
 const onlineUsers = new Map(); // userId -> socketId
@@ -171,8 +173,9 @@ mongoose
       }
     }, 30000);
 
-    server.listen(5000, () => {
-      console.log("🚀 Server is running on port 5000");
+    const port = process.env.PORT || 5000;  
+    server.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
     });
   })
   .catch((err) => {

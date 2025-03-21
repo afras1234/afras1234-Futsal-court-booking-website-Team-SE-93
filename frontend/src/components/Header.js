@@ -276,7 +276,7 @@ const Header = () => {
                 >
                   <MenuItem 
                     onClick={() => {
-                      navigate(isAdminLoggedIn ? "/admin-profile" : "/profile");
+                      navigate(isAdminLoggedIn ? "/admin-profile" : "/user");
                       handleProfileClose();
                     }}
                   >

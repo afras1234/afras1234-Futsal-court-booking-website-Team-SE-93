@@ -4,9 +4,15 @@ import {
   getAllFutsalCourts,
   getFutsalCourtById,
 } from "../controllers/futsalCourt-controller.js";
+import { verifyAdmin } from "../middleware/adminAuth.js";
+
 const futsalCourtRouter = express.Router();
+
+// Public routes
 futsalCourtRouter.get("/", getAllFutsalCourts);
 futsalCourtRouter.get("/:id", getFutsalCourtById);
-futsalCourtRouter.post("/", addFutsalCourt);
+
+// Protected routes - only for admins
+futsalCourtRouter.post("/", verifyAdmin, addFutsalCourt);
 
 export default futsalCourtRouter;

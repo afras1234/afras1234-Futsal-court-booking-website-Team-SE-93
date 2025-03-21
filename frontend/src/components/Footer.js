@@ -50,25 +50,70 @@ const Footer = () => {
           </Grid>
 
           {/* Quick Links */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid item xs={12} md={2}>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
               Quick Links
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Link to="/" style={{ textDecoration: 'none', color: '#999' }}>
-                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>Home</MuiLink>
+              <Link 
+                to="/" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#999',
+                  '&:hover': { 
+                    color: '#ff5722' 
+                  } 
+                }}
+              >
+                Home
               </Link>
-              <Link to="/about" style={{ textDecoration: 'none', color: '#999' }}>
-                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>About Us</MuiLink>
+              <Link 
+                to="/about" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#999',
+                  '&:hover': { 
+                    color: '#ff5722' 
+                  } 
+                }}
+              >
+                About Us
               </Link>
-              <Link to="/futsalCourts" style={{ textDecoration: 'none', color: '#999' }}>
-                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>Courts</MuiLink>
+              <Link 
+                to="/futsalCourts" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#999',
+                  '&:hover': { 
+                    color: '#ff5722' 
+                  } 
+                }}
+              >
+                Courts
               </Link>
-              <Link to="/tournaments" style={{ textDecoration: 'none', color: '#999' }}>
-                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>Tournaments</MuiLink>
+              <Link 
+                to="/tournaments" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#999',
+                  '&:hover': { 
+                    color: '#ff5722' 
+                  } 
+                }}
+              >
+                Tournaments
               </Link>
-              <Link to="/contact" style={{ textDecoration: 'none', color: '#999' }}>
-                <MuiLink underline="none" sx={{ '&:hover': { color: '#ff5722' } }}>Contact</MuiLink>
+              <Link 
+                to="/contact" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#999',
+                  '&:hover': { 
+                    color: '#ff5722' 
+                  } 
+                }}
+              >
+                Contact
               </Link>
             </Box>
           </Grid>
