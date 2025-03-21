@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 
 // Set up Axios default base URL
-axios.defaults.baseURL = "http://localhost:5001";
+axios.defaults.baseURL = "http://localhost:5000";
 axios.defaults.withCredentials = true; // Ensures cookies are sent
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
