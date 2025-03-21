@@ -370,6 +370,7 @@ const Profile = () => {
       <DialogActions sx={{ p: 2 }}>
         <Button 
           onClick={onClose}
+
           variant="contained"
           sx={{
             bgcolor: '#ff5722',
