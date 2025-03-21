@@ -55,7 +55,7 @@ const UserProfile = () => {
 
         const userRes = await getUserDetails();
         setUser(userRes?.user || null);
-        
+
         if (userRes?.user) {
           setEditForm({
             name: userRes.user.name || "",
@@ -238,11 +238,11 @@ const UserProfile = () => {
                   const registration = tournament.registrations.find(
                     reg => reg.userId === localStorage.getItem('userId')
                   );
-                  
+
                   return (
                     <Grid item xs={12} key={tournament._id}>
-                      <Card 
-                        sx={{ 
+                      <Card
+                        sx={{
                           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                           transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
                           '&:hover': {
@@ -256,15 +256,14 @@ const UserProfile = () => {
                             <Typography variant="h6" component="h2" sx={{ color: '#ff5722' }}>
                               {tournament.name}
                             </Typography>
-                            <Chip 
+                            <Chip
                               label={tournament.status.toUpperCase()}
-                              sx={{ 
+                              sx={{
                                 bgcolor: getStatusColor(tournament.status),
                                 color: 'white'
                               }}
                             />
                           </Box>
-                          
                           <Typography variant="body2" color="text.secondary" paragraph>
                             {tournament.description}
                           </Typography>

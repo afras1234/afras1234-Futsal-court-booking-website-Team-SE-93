@@ -37,6 +37,7 @@ import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 import EmailIcon from '@mui/icons-material/Email';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
+import UserProfile from '../profile/UserProfile';
 
 const Profile = () => {
   const [createdTournaments, setCreatedTournaments] = useState([]);
