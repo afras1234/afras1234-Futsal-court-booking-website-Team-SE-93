@@ -68,7 +68,7 @@ const Footer = () => {
                 Home
               </Link>
               <Link 
-                to="/about" 
+                to="/about-us" 
                 style={{ 
                   textDecoration: 'none', 
                   color: '#999',

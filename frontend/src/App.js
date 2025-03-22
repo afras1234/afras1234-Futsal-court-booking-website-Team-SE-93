@@ -13,6 +13,7 @@ import AdminProfile from "./profile/AdminProfile";
 import User from "./components/Profiles/User";
 import TournamentForm from "./components/TournamentForm";
 import CartPage from "./components/Bookings/CartPage";
+import AboutUs from "./components/AboutUs"; // Importing AboutUs Component
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { adminActions, userActions } from "./store";
@@ -50,6 +51,7 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/futsalCourts" element={<FutsalCourts />} />
+          <Route path="/about-us" element={<AboutUs />} /> {/* AboutUs Route */}
 
           {/* Auth routes - always accessible */}
           <Route path="/auth" element={<Auth />} />

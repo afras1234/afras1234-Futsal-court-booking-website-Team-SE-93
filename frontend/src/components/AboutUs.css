@@ -1,0 +1,223 @@
+/* AboutUs.css */
+
+/* General Page Styling */
+.about-us {
+    background-color: #f5f5f0;
+    color: #043c29;
+    padding: 6rem 1.5rem;
+    font-family: sans-serif;
+  }
+  
+  /* Header Container */
+  .about-us .header-container {
+    background-color: #f0f7e6; 
+    border-radius: 20px;
+    padding: 6rem 1.5rem;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Headings and Paragraphs */
+  .about-us h1 {
+    font-size: 5rem;
+    font-weight: 700;
+    color: #014d30;
+    line-height: 1.1;
+  }
+  
+  .about-us h2 {
+    font-size: 4rem; /* Adjusted to match the header font size style */
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+  
+  .about-us p {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+    color: black; /* Black text for better visibility */
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Grid Section */
+  .about-us .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-top: 2.5rem;
+  }
+  
+  .about-us img {
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Text Containers */
+  .about-us .text-container {
+    background-color: #014d30;
+    color: white;
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Our Vision Section */
+  .about-us .our-vision .text-container {
+    background-color: #014d30;
+    color: white;
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Features Section */
+  .about-us .features-section .text-container {
+    background-color: #014d48;
+    color: white;
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Additional Section 1 */
+  .about-us .additional-section-1 .text-container {
+    background-color: #374d01;
+    color: white;
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Additional Section 2 */
+  .about-us .additional-section-2 .text-container {
+    background-color: #01324d;
+    color: white;
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .about-us .grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .about-us img {
+      order: -1;
+    }
+  
+    .about-us .text-container {
+      padding: 2rem;
+    }
+  
+    .about-us h1 {
+      font-size: 3rem;
+    }
+  
+    .about-us h2 {
+      font-size: 2rem;
+    }
+  
+    .about-us p {
+      font-size: 1rem;
+    }
+  }
+  /* Our Values Section */
+.our-values-section {
+    text-align: center;
+    margin-top: 6rem;
+  }
+  
+  .our-values-section h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #014d30;
+  }
+  
+  .our-values-section p {
+    font-size: 1.5rem;
+    color: #043c29;
+    margin-bottom: 3rem;
+  }
+  
+  /* Value Cards Layout */
+  .value-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    justify-content: center;
+  }
+  
+  .value-card {
+    background-color: #e6efea;
+    border-radius: 16px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .value-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #014d30;
+    margin-bottom: 1rem;
+  }
+  
+  .value-card p {
+    font-size: 1.25rem;
+    color: #043c29;
+  }
+  
+  /* Centering the Last Two Cards Side by Side */
+  .value-cards.double-card {
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .value-cards {
+      grid-template-columns: 1fr 1fr;
+    }
+  
+    .value-cards.double-card {
+      grid-template-columns: 1fr;
+    }
+  
+    .value-card {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .value-cards {
+      grid-template-columns: 1fr;
+    }
+  
+    .value-cards.double-card {
+      grid-template-columns: 1fr;
+    }
+  
+    .our-values-section h1 {
+      font-size: 3rem;
+    }
+  
+    .value-card h3 {
+      font-size: 1.75rem;
+    }
+  
+    .value-card p {
+      font-size: 1rem;
+    }
+  }
+  
